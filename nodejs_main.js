@@ -1,2 +1,2 @@
-var textglass = require('js/textglass');
-var textglasstest = require('js/textglasstest');
+var textglass = require('./js/textglass');
+var textglasstest = require('./js/textglasstest');
