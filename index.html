@@ -1,0 +1,95 @@
+<html>
+<head>
+  <title>TextGlass</title>
+</head>
+<body>
+  <h1>TextGlass Javascript Client</h1>
+  Pattern file: <input id="pattern" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/patterns.json"><br>
+  <br>
+  Attribute file: <input id="attribute" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/attributes.json"><br>
+  <br>
+  Test file: <input id="test" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/test.json"><br>
+  <br>
+  Test input: <input id="input" type="text" size="80" value=""><br>
+  <br>
+  <input type="button" value="Load" onclick="load()"><br>
+  <br>
+  <div class="out">
+    <textarea id="out" rows="6" cols="80" disabled></textarea>
+  </div>
+  <script>
+    if(document.body.clientWidth < 800) {
+      document.getElementById('out').cols = Math.floor(((document.body.clientWidth - 40) / 8));
+    }
+
+    document.getElementById('input').value = navigator.userAgent;
+
+    var textglass = textglass || {};
+
+    textglass.debug = function(level, s) {
+      if(level <= textglass.debugLevel) {
+        var params = Array.prototype.slice.call(arguments, 1);
+        console.log.apply(console, params);
+        
+        var out = document.getElementById('out');
+        var line = out.value ? '\n' : '';
+        
+        for(var i = 1; i < arguments.length; i++) {
+          if(i > 1) {
+            line += ' ';
+          }
+          line += arguments[i];
+        }
+        
+        out.value += line;
+        out.scrollTop = out.scrollHeight;
+      }
+    };
+
+    function load() {
+      var pattern = document.getElementById('pattern').value;
+
+      textglass.debug(3, 'Load clicked:', pattern);
+
+      var patternFile = {};
+      var count = 0;
+      var countRequired = 1;
+
+      getFile(pattern, function(request) {
+        if (request.status >= 200 && request.status < 300){
+          patternFile = JSON.parse(request.responseText);
+
+          count++;
+
+          if(count === countRequired) {
+            loadClient(patternFile);
+          }
+        } else {
+          textglass.debug(0, 'Bad response code', request.status, pattern);
+        }
+      });
+    }
+
+    function loadClient(patternFile) {
+      textglass.loadObjects(patternFile);
+    }
+
+    function getFile(url, onready) {
+      var request = new XMLHttpRequest();
+      request.open('GET', url, true);
+
+      request.onload = function() {
+        onready(request);
+      };
+
+      request.onerror = function() {
+        textglass.debug(0, 'Error loading', url);
+      };
+
+      request.send();
+    }
+  </script>
+  <script src="textglass.js"></script>
+  <script src="textglasstest.js"></script>
+</body>
+</html>
