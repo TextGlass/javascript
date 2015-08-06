@@ -214,7 +214,7 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   domain.name = domainName;
   domain.version = domainVersion;
   domain.pattern = pattern;
-  domain.attribute = attribute;
+  domain.attribute = attribute || {};
   domain.classify = function(input) {
     return textglass.classify(domain, input);
   };
@@ -285,7 +285,7 @@ textglass.classify = function(domain, input) {
       var candidate = candidates[i];
 
       if(textglass.isPatternValid(candidate, matchedTokens)) {
-        if(winner == null) {
+        if(!winner) {
           winner = candidate;
         } else if(candidate.rank > winner.rank) {
           winner = candidate;
@@ -300,11 +300,55 @@ textglass.classify = function(domain, input) {
   textglass.debug(1, 'Winner:', (winner ? winner.patternId : 'null'));
 
   if(winner) {
-    return {
-      patternId: winner.patternId
+    return textglass.getAttributes(domain, winner.patternId, input);
+  }
+};
+
+textglass.getAttributes = function(domain, patternId, input) {
+  var attributesObj = undefined;
+
+  textglass.debug(2, 'attributes', domain.attribute);
+
+  if(domain.attribute.attributes) {
+    attributesObj = domain.attribute.attributes[patternId];
+  }
+
+  if(attributesObj) {
+    var attributes = textglass.copyAttributes(attributesObj.attributes);
+    var parent = attributesObj;
+
+    while(parent.parentId) {
+      parent = domain.attribute.attributes[parent.parentId];
+
+      if(!parent) {
+        break;
+      }
+
+      for(var parentAttribute in parent.attributes) {
+        if(!attributes[parentAttribute]) {
+          attributes[parentAttribute] = parent.attributes[parentAttribute];
+        }
+      }
+    }
+
+    attributes.patternId = patternId;
+    
+    return attributes;
+  } else {
+    return  {
+      patternId: patternId,
     };
   }
 };
+
+textglass.copyAttributes = function(attributes) {
+  var copy = {};
+
+  for(var attribute in attributes) {
+    copy[attribute] = attributes[attribute];
+  }
+  return copy;
+}
 
 textglass.isPatternValid = function(pattern, matchedTokens) {
   var lastFound = -1;

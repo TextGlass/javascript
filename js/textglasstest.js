@@ -50,10 +50,22 @@ textglasstest.loadObject = function(test) {
   for(var i = 0; i < test.tests.length; i++) {
     var testObj = test.tests[i];
 
+    textglass.debug(2, 'test input', testObj.input);
+
     var result = domain.classify(testObj.input);
 
+    textglass.debug(2, 'test result', result);
+
     if(result && (!testObj.resultPatternId) || (result && result.patternId !== testObj.resultPatternId)) {
-      return 'Test failed, ' + result + ' != ' + testObj.resultPatternId;
+      return 'Test failed, ' + result.patternId + ' != ' + testObj.resultPatternId;
+    }
+
+    for(var attribute in testObj.resultAttributes) {
+      var value = testObj.resultAttributes[attribute];
+
+      if(result[attribute] !== value) {
+        return 'Test failed for ' + testObj.resultPatternId + '.' + attribute + ', ' + value + ' != ' + result[attribute];
+      }
     }
 
     textglass.debug(1, 'Test passed', testObj.resultPatternId);
