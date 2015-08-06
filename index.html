@@ -12,10 +12,10 @@
   <br>
   Test input: <input id="input" type="text" size="80" value=""><br>
   <br>
-  <input type="button" value="Load" onclick="load()"><br>
+  <input id="load" type="button" value="Load" onclick="load()"><br>
   <br>
   <div class="out">
-    <textarea id="out" rows="6" cols="80" disabled></textarea>
+    <textarea id="out" rows="8" cols="80" disabled></textarea>
   </div>
   <script>
     if(document.body.clientWidth < 800) {
@@ -25,6 +25,8 @@
     document.getElementById('input').value = navigator.userAgent;
 
     var textglass = textglass || {};
+
+    textglass.debugLevel = 3;
 
     textglass.debug = function(level, s) {
       if(level <= textglass.debugLevel) {
@@ -47,46 +49,19 @@
     };
 
     function load() {
+      textglass.debug(3, 'Load button clicked');
+      
+      var button = document.getElementById('load');
+
+      button.disabled = true;
+
       var pattern = document.getElementById('pattern').value;
+      var attribute = document.getElementById('attribute').value;
 
-      textglass.debug(3, 'Load clicked:', pattern);
-
-      var patternFile = {};
-      var count = 0;
-      var countRequired = 1;
-
-      getFile(pattern, function(request) {
-        if (request.status >= 200 && request.status < 300){
-          patternFile = JSON.parse(request.responseText);
-
-          count++;
-
-          if(count === countRequired) {
-            loadClient(patternFile);
-          }
-        } else {
-          textglass.debug(0, 'Bad response code', request.status, pattern);
-        }
+      textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg) {
+        textglass.debug(3, 'loadURL() callback', state);
+        button.disabled = false;
       });
-    }
-
-    function loadClient(patternFile) {
-      textglass.loadObjects(patternFile);
-    }
-
-    function getFile(url, onready) {
-      var request = new XMLHttpRequest();
-      request.open('GET', url, true);
-
-      request.onload = function() {
-        onready(request);
-      };
-
-      request.onerror = function() {
-        textglass.debug(0, 'Error loading', url);
-      };
-
-      request.send();
     }
   </script>
   <script src="js/textglass.js"></script>
