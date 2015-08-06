@@ -18,10 +18,10 @@ textglass.debug = textglass.debug || function(level, s) {
 };
 
 textglass.loadURLs = function(patternURL, attributeURL, patternPatchURL, attributePatchURL, callback) {
-  textglass.debug(2, 'patternURL:', patternURL);
-  textglass.debug(2, 'attributeURL:', attributeURL);
-  textglass.debug(2, 'patternPatchURL:', patternPatchURL);
-  textglass.debug(2, 'attributePatchURL:', attributePatchURL);
+  textglass.debug(1, 'patternURL:', patternURL);
+  textglass.debug(1, 'attributeURL:', attributeURL);
+  textglass.debug(1, 'patternPatchURL:', patternPatchURL);
+  textglass.debug(1, 'attributePatchURL:', attributePatchURL);
 
   callback = callback || function() {};
 
@@ -40,9 +40,7 @@ textglass.loadURLs = function(patternURL, attributeURL, patternPatchURL, attribu
   loading.patternPatch = {};
   loading.attributePatch= {};
 
-  if(patternURL) {
-    textglass.getURL(loading.pattern, loading, patternURL);
-  }
+  textglass.getURL(loading.pattern, loading, patternURL);
 
   if(attributeURL) {
     textglass.getURL(loading.attribute, loading, attributeURL);
@@ -57,7 +55,7 @@ textglass.loadURLs = function(patternURL, attributeURL, patternPatchURL, attribu
   }
 };
 
-textglass.getURL = function(loadobj, parent, url) {
+textglass.getURL = function(loadobj, parent, url, ready) {
   loadobj.url = url;
   loadobj.status = 1;
   loadobj.parent = parent;
@@ -80,7 +78,11 @@ textglass.getURL = function(loadobj, parent, url) {
 
       loadobj.status = 2;
 
-      textglass.readyToLoad(loadobj.parent);
+      if(ready) {
+        ready(loadobj.parent);
+      } else {
+        textglass.readyToLoad(loadobj.parent);
+      }
     } else {
       var msg = 'Bad response code ' + loadobj.request.status + 'for ' + loadobj.url;
       textglass.loadError(loadobj, msg);
@@ -137,9 +139,7 @@ textglass.readyToLoad = function(loading) {
     return;
   }
 
-  if(loading.callback) {
-    loading.callback('ready', loading.pattern.json.domain);
-  }
+  loading.callback('ready', loading.pattern.json.domain);
 };
 
 textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatch) {
@@ -340,8 +340,20 @@ textglass.getPatternRank = function(pattern) {
   return rank;
 };
 
-textglass.getMatchedLength = function(pattern, matchedToken) {
-  return 0;
+textglass.getMatchedLength = function(pattern, matchedTokens) {
+  var length = 0;
+
+  for(var i = 0; i < pattern.patternTokens.length; i++) {
+    var patternToken = pattern.patternTokens[i];
+
+    var found = matchedTokens.indexOf(patternToken);
+
+    if(found >= 0) {
+      length += patternToken.length;
+    }
+  }
+
+  return length;
 };
 
 textglass.compileTransformer = function(transformer) {
@@ -405,4 +417,4 @@ textglass.split = function(source, tokenSeperators) {
   return tokens;
 };
 
-textglass.debug(1, 'TextGlass Javascript Client', textglass.version);
+textglass.loaded = true;

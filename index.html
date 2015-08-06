@@ -2,7 +2,7 @@
 <head>
   <title>TextGlass</title>
 </head>
-<body>
+<body onload="main()">
   <h1>TextGlass Javascript Client</h1>
   Pattern file: <input id="pattern" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/patterns.json"><br>
   <br>
@@ -58,15 +58,25 @@
 
       var pattern = document.getElementById('pattern').value;
       var attribute = document.getElementById('attribute').value;
+      var test = document.getElementById('test').value;
       var input = document.getElementById('input').value;
 
       textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg) {
-        textglass.debug(3, 'loadURL() callback', state, msg);
+        textglass.debug(3, 'textglass.loadURL() callback', state, msg);
         if(state === 'ready') {
+          textglasstest.loadURL(test, function(state, msg) {
+            textglass.debug(3, 'textglasstest.loadURL() callback', state, msg);
+          });
           textglass.domains[msg].classify(input);
         }
         button.disabled = false;
       });
+    }
+
+    function main() {
+      if(textglass.loaded) {
+        textglass.debug(1, 'TextGlass Javascript Client', textglass.version, "LOADED!");
+      }
     }
   </script>
   <script src="js/textglass.js"></script>
