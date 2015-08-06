@@ -57,9 +57,13 @@
 
       var pattern = document.getElementById('pattern').value;
       var attribute = document.getElementById('attribute').value;
+      var input = document.getElementById('input').value;
 
       textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg) {
-        textglass.debug(3, 'loadURL() callback', state);
+        textglass.debug(3, 'loadURL() callback', state, msg);
+        if(state === 'ready') {
+          textglass.domains[msg].classify(input);
+        }
         button.disabled = false;
       });
     }
