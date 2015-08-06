@@ -11,7 +11,8 @@ textglass.domains = {};
 
 textglass.debug = textglass.debug || function(level, s) {
   if(level <= textglass.debugLevel) {
-    var params = Array.prototype.slice.call(arguments, 1);
+    var params = Array.prototype.slice.call(arguments, 0);
+    params[0] = 'textglass';
     console.log.apply(console, params);
   }
 };
@@ -186,6 +187,30 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
     }
   }
 
+  pattern.patternIndex = {};
+
+  for(var i = 0; i < pattern.patternSet.patterns.length; i++) {
+    var patternObj = pattern.patternSet.patterns[i];
+
+    patternObj.rank = textglass.getPatternRank(patternObj);
+
+    textglass.debug(2, 'Found pattern:', patternObj.patternId,
+        'tokens:', patternObj.patternTokens, 'rank:', patternObj.rank );
+
+    for(var j = 0; j < patternObj.patternTokens.length; j++) {
+      var token = patternObj.patternTokens[j];
+
+      var patternList = pattern.patternIndex[token];
+
+      if(!patternList) {
+        patternList = [];
+        pattern.patternIndex[token] = patternList;
+      }
+
+      patternList.push(patternObj);
+    }
+  }
+
   domain.name = domainName;
   domain.version = domainVersion;
   domain.pattern = pattern;
@@ -207,7 +232,117 @@ textglass.classify = function(domain, input) {
   }
 
   textglass.debug(1, 'classify() transformed', input);
-}
+
+  var tokens = textglass.split(input, domain.pattern.inputParser.tokenSeperators);
+
+  textglass.debug(1, 'classify() tokens', tokens);
+
+  var tokenStream = [];
+  var ngramConcatSize = domain.pattern.inputParser.ngramConcatSize || 1;
+
+  for(var i = 0; i < tokens.length; i++) {
+    var ngram = '';
+    var ngramParts = [];
+
+    for(var size = ngramConcatSize; size > 0 && i + ngramConcatSize - size < tokens.length; size--) {
+      ngram += tokens[i + ngramConcatSize - size];
+
+      ngramParts.unshift(ngram);
+    }
+
+    tokenStream.push.apply(tokenStream, ngramParts);
+
+    ngramParts = [];
+  }
+
+  textglass.debug(1, 'classify() ngrams', tokenStream);
+
+  var matchedTokens = [];
+  var candidates = [];
+  var winner = undefined;
+
+  for(var i = 0; i < tokenStream.length; i++) {
+    var token = tokenStream[i];
+    var matched = domain.pattern.patternIndex[token];
+
+    if(matched) {
+      matchedTokens.push(token);
+
+      for(var j = 0; j < matched.length; j++) {
+        var match = matched[j];
+
+        if(candidates.indexOf(match) === -1) {
+          candidates.push(match);
+        }
+      }
+
+      textglass.debug(2, 'Hit:', token, 'candidates:', matched);
+    }
+  }
+
+  if(!winner) {
+    for(var i = 0; i < candidates.length; i++) {
+      var candidate = candidates[i];
+
+      if(textglass.isPatternValid(candidate, matchedTokens)) {
+        if(winner == null) {
+          winner = candidate;
+        } else if(candidate.rank > winner.rank) {
+          winner = candidate;
+        } else if(candidate.rank === winner.rank &&
+            textglass.getMatchedLength(candidate, matchedTokens) > textglass.getMatchedLength(winner, matchedTokens)) {
+          winner = candidate;
+        }
+      }
+    }
+  }
+
+  textglass.debug(1, 'Winner:', (winner ? winner.patternId : 'null'));
+};
+
+textglass.isPatternValid = function(pattern, matchedTokens) {
+  var lastFound = -1;
+
+  for(var i = 0; i < pattern.patternTokens.length; i++) {
+    var patternToken = pattern.patternTokens[i];
+
+    var found = matchedTokens.indexOf(patternToken);
+
+    if(found == -1 && (pattern.patternType === 'SimpleAnd' || pattern.patternType === 'SimpleOrderedAnd')) {
+      return false;
+    }
+
+    if(found >= 0 && pattern.patternType === 'Simple') {
+      return true;
+    }
+
+    if(pattern.patternType === 'SimpleOrderedAnd') {
+      if(found <= lastFound) {
+        return false;
+      } else {
+        lastFound = found;
+      }
+    }
+  }
+
+  return pattern.patternType !== 'Simple';
+};
+
+textglass.getPatternRank = function(pattern) {
+  var rank = pattern.rankValue;
+
+  if(pattern.rankType === 'Weak') {
+    rank += 100000;
+  } else if(pattern.rankType === 'Strong') {
+    return 10000000;
+  }
+
+  return rank;
+};
+
+textglass.getMatchedLength = function(pattern, matchedToken) {
+  return 0;
+};
 
 textglass.compileTransformer = function(transformer) {
   if(transformer.type === 'LowerCase') {
@@ -223,10 +358,51 @@ textglass.transformers = {};
 
 textglass.transformers.LowerCase = function(input) {
   return input.toLowerCase();
-}
+};
 
 textglass.transformers.ReplaceAll = function(input, find, replaceWith) {
   return input.split(find).join(replaceWith);
-}
+};
+
+textglass.split = function(source, tokenSeperators) {
+  tokenSeperators = tokenSeperators || [];
+  var tokens = [];
+  var sourcePos = 0;
+  var destStart = 0;
+  var destEnd = 0;
+
+  source:
+  while(sourcePos < source.length) {
+    seperator:
+    for(var s = 0; s < tokenSeperators.length; s++) {
+      var seperator = tokenSeperators[s];
+      var i;
+
+      for(i = 0; i < seperator.length; i++) {
+        if(sourcePos + i >= source.length || source.charAt(sourcePos + i) !== seperator.charAt(i)) {
+          continue seperator;
+        }
+      }
+
+      if(destEnd - destStart > 0) {
+        tokens.push(source.substring(destStart, destEnd));
+      }
+
+      sourcePos += i;
+      destStart = destEnd = sourcePos;
+
+      continue source;
+    }
+
+    sourcePos++;
+    destEnd++;
+  }
+
+  if(destEnd - destStart > 0) {
+    tokens.push(source.substring(destStart, destEnd));
+  }
+
+  return tokens;
+};
 
 textglass.debug(1, 'TextGlass Javascript Client', textglass.version);

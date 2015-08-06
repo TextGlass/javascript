@@ -30,7 +30,8 @@
 
     textglass.debug = function(level, s) {
       if(level <= textglass.debugLevel) {
-        var params = Array.prototype.slice.call(arguments, 1);
+        var params = Array.prototype.slice.call(arguments, 0);
+        params[0] = 'textglass';
         console.log.apply(console, params);
         
         var out = document.getElementById('out');
