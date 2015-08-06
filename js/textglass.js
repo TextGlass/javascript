@@ -156,10 +156,10 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
     }
   }
 
-  textglass.debug(2, 'Loading:', domainName, 'Version:', domainVersion);
+  textglass.debug(1, 'Loading:', domainName, 'Version:', domainVersion);
 
   if(textglass.domains[domainName]) {
-    return "Domain already loaded";
+    return 'Domain already loaded';
   }
 
   var domain = {};
@@ -298,6 +298,12 @@ textglass.classify = function(domain, input) {
   }
 
   textglass.debug(1, 'Winner:', (winner ? winner.patternId : 'null'));
+
+  if(winner) {
+    return {
+      patternId: winner.patternId
+    };
+  }
 };
 
 textglass.isPatternValid = function(pattern, matchedTokens) {
