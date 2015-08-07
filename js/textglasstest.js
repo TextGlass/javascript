@@ -28,6 +28,8 @@ textglasstest.loadURL = function(testURL, callback) {
 };
 
 textglasstest.loadObject = function(test) {
+  var start = Date.now();
+  
   var domainName = test.domain;
   var domainVersion = test.domainVersion;
 
@@ -73,9 +75,11 @@ textglasstest.loadObject = function(test) {
     textglass.debug(1, 'Test passed', testObj.resultPatternId);
   }
 
+  var end = Date.now() - start;
+
   textglass.debug(1, 'All tests passed');
 
   return {
-    msg: 'All tests passed (' + i + ')'
+    msg: 'All tests passed (' + i + '), time: ' + end + 'ms'
   };
 };

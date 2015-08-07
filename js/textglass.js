@@ -134,6 +134,8 @@ textglass.readyToLoad = function(loading) {
 };
 
 textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatch) {
+  var start = Date.now();
+  
   var domainName = pattern.domain;
   var domainVersion = pattern.domainVersion;
 
@@ -239,9 +241,12 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
     return textglass.classify(domain, input);
   };
 
+  var end = Date.now() - start;
+
   return {
     msg: 'Loaded ' + domainName + ', version: ' + domainVersion +
-        ', patterns: ' + domain.pattern.patternSet.patterns.length + ', attributes: ' + attributeCount,
+        ', patterns: ' + domain.pattern.patternSet.patterns.length +
+        ', attributes: ' + attributeCount + ', time: ' + end + 'ms',
     domain: domainName,
     domainVersion: domainVersion
   };
