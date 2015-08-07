@@ -1,34 +1,51 @@
 <html>
 <head>
   <title>TextGlass</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style type="text/css">
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    .out {
+      color: #0000FF;
+      font-family: "Courier New", Courier, monospace;
+      padding-left: 20px;
+    }
+    .input {
+      width: 100%;
+      max-width: 500px;
+    }
+  </style>
 </head>
 <body onload="main()">
+
   <h1>TextGlass Javascript Client</h1>
-  Pattern file: <input id="pattern" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/patterns.json"><br>
+
+  Pattern file: <input id="pattern" class="input" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/patterns.json"><br>
   <br>
-  Attribute file: <input id="attribute" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/attributes.json"><br>
+  Attribute file: <input id="attribute" class="input"  type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/attributes.json"><br>
   <br>
-  <div id="clientout"></div>
+  Pattern Patch file: <input id="patternpatch" class="input" type="text" size="60" value=""><br>
   <br>
-  Test file: <input id="test" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/test.json"><br>
+  Attribute Patch file: <input id="attributepatch" class="input" type="text" size="60" value=""><br>
   <br>
-  <div id="testout"></div>
+  <div id="clientout" class="out"></div>
   <br>
-  Test input: <input id="input" type="text" size="80" value=""><br>
+  Test file: <input id="test" class="input" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/test.json"><br>
   <br>
-  <div id="inputout"></div>
+  <div id="testout" class="out"></div>
+  <br>
+  Test input: <input id="input" class="input" type="text" size="80" value=""><br>
+  <br>
+  <div id="inputout" class="out"></div>
   <br>
   <input id="load" type="button" value="Load" onclick="load()"><br>
   <br>
-  <div class="out">
-    <textarea id="out" rows="8" cols="80" disabled></textarea>
-  </div>
+  <div id="out" class="out"></div>
+  
   <script>
     function get(id) {
       return document.getElementById(id);
-    }
-    if(document.body.clientWidth < 800) {
-      get('out').cols = Math.floor(((document.body.clientWidth - 40) / 8));
     }
 
     get('input').value = navigator.userAgent;
@@ -36,27 +53,6 @@
     var textglass = textglass || {};
 
     textglass.debugLevel = 3;
-
-    textglass.debug = function(level, s) {
-      if(level <= textglass.debugLevel) {
-        var params = Array.prototype.slice.call(arguments, 0);
-        params[0] = 'textglass';
-        console.log.apply(console, params);
-        
-        var out = get('out');
-        var line = out.value ? '\n' : '';
-        
-        for(var i = 1; i < arguments.length; i++) {
-          if(i > 1) {
-            line += ' ';
-          }
-          line += arguments[i];
-        }
-        
-        out.value += line;
-        out.scrollTop = out.scrollHeight;
-      }
-    };
 
     function load() {
       textglass.debug(3, 'Load button clicked');
@@ -99,11 +95,15 @@
 
     function main() {
       if(textglass.loaded) {
-        textglass.debug(1, 'TextGlass Javascript Client', textglass.version, "LOADED!");
+        get('out').innerHTML = 'TextGlass Javascript Client ' + textglass.version + ' LOADED!';
+      } else {
+        get('out').innerHTML = 'TextGlass ERROR';
       }
     }
   </script>
+
   <script src="js/textglass.js"></script>
   <script src="js/textglasstest.js"></script>
+
 </body>
 </html>

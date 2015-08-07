@@ -5,7 +5,7 @@ if(typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 }
 
 textglass.version = '1.0.0';
-textglass.debugLevel = textglass.debugLevel || 2;
+textglass.debugLevel = textglass.debugLevel || -1;
 
 textglass.domains = {};
 
