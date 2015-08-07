@@ -301,6 +301,8 @@ textglass.classify = function(domain, input) {
 
   if(winner) {
     return textglass.getAttributes(domain, winner.patternId, input);
+  } else {
+    return null;
   }
 };
 

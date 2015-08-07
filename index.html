@@ -8,9 +8,15 @@
   <br>
   Attribute file: <input id="attribute" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/attributes.json"><br>
   <br>
+  <div id="clientout"></div>
+  <br>
   Test file: <input id="test" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/test.json"><br>
   <br>
+  <div id="testout"></div>
+  <br>
   Test input: <input id="input" type="text" size="80" value=""><br>
+  <br>
+  <div id="inputout"></div>
   <br>
   <input id="load" type="button" value="Load" onclick="load()"><br>
   <br>
@@ -18,11 +24,14 @@
     <textarea id="out" rows="8" cols="80" disabled></textarea>
   </div>
   <script>
+    function get(id) {
+      return document.getElementById(id);
+    }
     if(document.body.clientWidth < 800) {
-      document.getElementById('out').cols = Math.floor(((document.body.clientWidth - 40) / 8));
+      get('out').cols = Math.floor(((document.body.clientWidth - 40) / 8));
     }
 
-    document.getElementById('input').value = navigator.userAgent;
+    get('input').value = navigator.userAgent;
 
     var textglass = textglass || {};
 
@@ -34,7 +43,7 @@
         params[0] = 'textglass';
         console.log.apply(console, params);
         
-        var out = document.getElementById('out');
+        var out = get('out');
         var line = out.value ? '\n' : '';
         
         for(var i = 1; i < arguments.length; i++) {
@@ -51,24 +60,39 @@
 
     function load() {
       textglass.debug(3, 'Load button clicked');
+
+      get('clientout').innerHTML = 'Loading...';
+      get('testout').innerHTML = '';
+      get('inputout').innerHTML = '';
       
-      var button = document.getElementById('load');
+      var button = get('load');
 
       button.disabled = true;
 
-      var pattern = document.getElementById('pattern').value;
-      var attribute = document.getElementById('attribute').value;
-      var test = document.getElementById('test').value;
-      var input = document.getElementById('input').value;
+      var pattern = get('pattern').value;
+      var attribute = get('attribute').value;
+      var test = get('test').value;
+      var input = get('input').value;
 
       textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg) {
         textglass.debug(3, 'textglass.loadURL() callback', state, msg);
+
+        get('clientout').innerHTML = state + (msg ? ': ' + msg : '');
+
         if(state === 'ready') {
           textglasstest.loadURL(test, function(state, msg) {
             textglass.debug(3, 'textglasstest.loadURL() callback', state, msg);
+
+            get('testout').innerHTML = state + (msg ? ': ' + msg : '');
           });
-          textglass.domains[msg].classify(input);
+
+          var inputout = textglass.domains[msg].classify(input);
+
+          textglass.debug(1, 'input result', inputout);
+
+          get('inputout').innerHTML = JSON.stringify(inputout, null, 2);
         }
+
         button.disabled = false;
       });
     }
