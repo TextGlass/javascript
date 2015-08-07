@@ -254,7 +254,12 @@ textglass.classify = function(domain, input) {
   if(domain.pattern.inputParser.compiledTransformers) {
     for(var i = 0; i < domain.pattern.inputParser.compiledTransformers.length; i++) {
       var compiledTransformer = domain.pattern.inputParser.compiledTransformers[i];
+
       input = compiledTransformer(input);
+
+      if (typeof input === "undefined") {
+        throw 'Transformer error on input';
+      }
     }
   }
 
@@ -337,7 +342,7 @@ textglass.getAttributes = function(domain, patternId, input) {
   var attributesObj = domain.attribute.attributes[patternId];
 
   if(attributesObj) {
-    var attributes = textglass.copyAttributes(attributesObj);
+    var attributes = textglass.copyAttributes(attributesObj, input);
     var parent = attributesObj;
 
     while(parent.parentId) {
@@ -347,7 +352,7 @@ textglass.getAttributes = function(domain, patternId, input) {
         break;
       }
 
-      for(var parentAttribute in textglass.copyAttributes(parent)) {
+      for(var parentAttribute in textglass.copyAttributes(parent, input)) {
         if(!attributes[parentAttribute]) {
           attributes[parentAttribute] = parent.attributes[parentAttribute];
         }
@@ -364,7 +369,7 @@ textglass.getAttributes = function(domain, patternId, input) {
   }
 };
 
-textglass.copyAttributes = function(attributesObj) {
+textglass.copyAttributes = function(attributesObj, input) {
   var copy = {};
 
   for(var attribute in attributesObj.attributes) {
@@ -373,7 +378,21 @@ textglass.copyAttributes = function(attributesObj) {
 
   for(var attribute in attributesObj.attributeTransformers) {
     var attributeTransformer = attributesObj.attributeTransformers[attribute];
-    copy[attribute] = 'TODO';
+
+    var value = input;
+
+    for(var i = 0; i < attributeTransformer.compiledTransformers.length; i++) {
+      var compiledTransformer = attributeTransformer.compiledTransformers[i];
+
+      value = compiledTransformer(value);
+
+      if (typeof value === "undefined") {
+        value = attributeTransformer.defaultValue || '';
+        break;
+      }
+    }
+
+    copy[attribute] = value;
   }
   
   return copy;
@@ -460,6 +479,12 @@ textglass.getTransformer = function(transformer) {
     return function(input) {
       return textglass.transformers.ReplaceAll(input, transformer.parameters.find, transformer.parameters.replaceWith);
     };
+  } else if(transformer.type === 'SplitAndGet') {
+    return function(input) {
+      return textglass.transformers.SplitAndGet(input, transformer.parameters.delimeter, transformer.parameters.get);
+    };
+  } else if(transformer.type === 'IsNumber') {
+    return textglass.transformers.IsNumber;
   }
 };
 
@@ -470,7 +495,25 @@ textglass.transformers.LowerCase = function(input) {
 };
 
 textglass.transformers.ReplaceAll = function(input, find, replaceWith) {
-  return input.split(find).join(replaceWith);
+  return textglass.split(input, [find]).join(replaceWith);
+};
+
+textglass.transformers.SplitAndGet = function(input, delimeter, get) {
+  var parts = textglass.split(input, [delimeter]);
+
+  if(get === -1) {
+    get = parts.length - 1;
+  }
+
+  return parts[get];
+};
+
+textglass.transformers.IsNumber = function(input) {
+  if(!isNaN(parseFloat(input)) && isFinite(input)) {
+    return input;
+  } else {
+    return undefined;
+  }
 };
 
 textglass.split = function(source, tokenSeperators) {
