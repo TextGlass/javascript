@@ -12,7 +12,7 @@ textglass.domains = {};
 textglass.debug = textglass.debug || function(level, s) {
   if(level <= textglass.debugLevel) {
     var params = Array.prototype.slice.call(arguments, 0);
-    params[0] = 'textglass';
+    params[0] = 'TextGlass ' + level + ':';
     console.log.apply(console, params);
   }
 };
@@ -162,20 +162,10 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   }
 
   if(pattern.inputParser.transformers && pattern.inputParser.transformers.length > 0) {
-    pattern.inputParser.compiledTransformers = [];
-    var transformers = pattern.inputParser.transformers;
-    for(var i = 0; i < transformers.length; i++) {
-      var transformer = transformers[i];
-      
-      textglass.debug(2, 'Found transformer:', transformer.type);
+    var error = textglass.compileTransformers(pattern.inputParser);
 
-      var compiled = textglass.compileTransformer(transformer);
-
-      if(!compiled) {
-        return {error: true, msg: 'Transformer not found: ' + transformer.type};
-      }
-
-      pattern.inputParser.compiledTransformers.push(compiled);
+    if(error) {
+      return error;
     }
   }
 
@@ -186,7 +176,7 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
 
     patternObj.rank = textglass.getPatternRank(patternObj);
 
-    textglass.debug(2, 'Found pattern:', patternObj.patternId,
+    textglass.debug(3, 'Found pattern:', patternObj.patternId,
         'tokens:', patternObj.patternTokens, 'rank:', patternObj.rank );
 
     for(var j = 0; j < patternObj.patternTokens.length; j++) {
@@ -221,7 +211,22 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   if(attribute) {
     for(var name in attribute.attributes) {
       var attributeObj = attribute.attributes[name];
-      //TODO compile transformers
+
+      textglass.debug(3, 'Found attribute:', name, 'attributes:', !!attributeObj.attributes,
+          'attributeTransformers:', !!attributeObj.attributeTransformers);
+
+      if(attributeObj.attributeTransformers) {
+        for(var transformedName  in attributeObj.attributeTransformers) {
+          var transformedAttribute = attributeObj.attributeTransformers[transformedName];
+
+          var error = textglass.compileTransformers(transformedAttribute);
+
+          if(error) {
+            return error;
+          }
+        }
+      }
+          
       attributeCount++;
     }
   }
@@ -253,11 +258,11 @@ textglass.classify = function(domain, input) {
     }
   }
 
-  textglass.debug(1, 'classify() transformed', input);
+  textglass.debug(2, 'classify() transformed', input);
 
   var tokens = textglass.split(input, domain.pattern.inputParser.tokenSeperators);
 
-  textglass.debug(1, 'classify() tokens', tokens);
+  textglass.debug(2, 'classify() tokens', tokens);
 
   var tokenStream = [];
   var ngramConcatSize = domain.pattern.inputParser.ngramConcatSize || 1;
@@ -277,7 +282,7 @@ textglass.classify = function(domain, input) {
     ngramParts = [];
   }
 
-  textglass.debug(1, 'classify() ngrams', tokenStream);
+  textglass.debug(2, 'classify() ngrams', tokenStream);
 
   var matchedTokens = [];
   var candidates = [];
@@ -430,7 +435,25 @@ textglass.getMatchedLength = function(pattern, matchedTokens) {
   return length;
 };
 
-textglass.compileTransformer = function(transformer) {
+textglass.compileTransformers = function(node) {
+  node.compiledTransformers = [];
+  
+  for(var i = 0; i < node.transformers.length; i++) {
+    var transformer = node.transformers[i];
+
+    textglass.debug(2, 'Found transformer:', transformer.type);
+
+    var compiled = textglass.getTransformer(transformer);
+
+    if(!compiled) {
+      return {error: true, msg: 'Transformer not found: ' + transformer.type};
+    }
+
+    node.compiledTransformers.push(compiled);
+  }
+};
+
+textglass.getTransformer = function(transformer) {
   if(transformer.type === 'LowerCase') {
     return textglass.transformers.LowerCase;
   } else if(transformer.type === 'ReplaceAll') {
