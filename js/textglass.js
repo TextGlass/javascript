@@ -115,31 +115,22 @@ textglass.readyToLoad = function(loading) {
     return;
   }
 
-  if(loading.pattern.url && loading.pattern.status !== 2) {
-    return;
+  for(var name in loading) {
+    var loadobj = loading[name];
+    if(loadobj.url && loadobj.status !== 2) {
+      return;
+    }
   }
 
-  if(loading.attribute.url && loading.attribute.status !== 2) {
-    return;
-  }
-
-  if(loading.patternPatch.url && loading.patternPatch.status !== 2) {
-    return;
-  }
-
-  if(loading.attributePatch.url && loading.attributePatch.status !== 2) {
-    return;
-  }
-
-  var error = textglass.loadObjects(loading.pattern.json, loading.attribute.json,
+  var ret = textglass.loadObjects(loading.pattern.json, loading.attribute.json,
       loading.patternPatch.json, loading.attributePatch.json);
 
-  if(error) {
-    loading.callback('error', 'Error loading domain: ' + error);
+  if(!ret || ret.error) {
+    loading.callback('error', ret ? ret.msg : 'Unknown error', ret.domain ? ret.domain : undefined);
     return;
   }
 
-  loading.callback('ready', loading.pattern.json.domain);
+  loading.callback('ready', ret.msg, ret.domain);
 };
 
 textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatch) {
@@ -147,19 +138,20 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   var domainVersion = pattern.domainVersion;
 
   if(pattern.type !== 'pattern') {
-    return 'Invalid pattern file';
+    return {error: true, msg: 'Invalid pattern file'};
   }
   
   if(attribute) {
-    if(attribute.type !== 'attribute' || attribute.domain !== domainName || attribute.domainVersion !== domainVersion) {
-      return 'Invalid attribute file';
+    if(attribute.type !== 'attribute' || attribute.domain !== domainName ||
+        attribute.domainVersion !== domainVersion || !attribute.attributes) {
+      return {error: true, msg: 'Invalid attribute file'};
     }
   }
 
   textglass.debug(1, 'Loading:', domainName, 'Version:', domainVersion);
 
   if(textglass.domains[domainName]) {
-    return 'Domain already loaded';
+    return {error: true, msg: 'Domain already loaded', domain: domainName};
   }
 
   var domain = {};
@@ -180,7 +172,7 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
       var compiled = textglass.compileTransformer(transformer);
 
       if(!compiled) {
-        return 'Transformer not found: ' + transformer.type;
+        return {error: true, msg: 'Transformer not found: ' + transformer.type};
       }
 
       pattern.inputParser.compiledTransformers.push(compiled);
@@ -211,12 +203,42 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
     }
   }
 
+  var attributeCount = 0;
+
+  if(pattern.attributes) {
+    if(!attribute) {
+      attribute = {attributes: pattern.attributes};
+    } else {
+      for(var name in pattern.attributes) {
+        var pattribute = pattern.attributes[name];
+        if(!attribute.attributes[name]) {
+          attribute.attributes[name] = pattribute;
+        }
+      }
+    }
+  }
+
+  if(attribute) {
+    for(var name in attribute.attributes) {
+      var attributeObj = attribute.attributes[name];
+      //TODO compile transformers
+      attributeCount++;
+    }
+  }
+
   domain.name = domainName;
   domain.version = domainVersion;
   domain.pattern = pattern;
-  domain.attribute = attribute || {};
+  domain.attribute = attribute || {attributes:{}};
   domain.classify = function(input) {
     return textglass.classify(domain, input);
+  };
+
+  return {
+    msg: 'Loaded ' + domainName + ', version: ' + domainVersion +
+        ', patterns: ' + domain.pattern.patternSet.patterns.length + ', attributes: ' + attributeCount,
+    domain: domainName,
+    domainVersion: domainVersion
   };
 };
 
@@ -307,16 +329,10 @@ textglass.classify = function(domain, input) {
 };
 
 textglass.getAttributes = function(domain, patternId, input) {
-  var attributesObj = undefined;
-
-  textglass.debug(2, 'attributes', domain.attribute);
-
-  if(domain.attribute.attributes) {
-    attributesObj = domain.attribute.attributes[patternId];
-  }
+  var attributesObj = domain.attribute.attributes[patternId];
 
   if(attributesObj) {
-    var attributes = textglass.copyAttributes(attributesObj.attributes);
+    var attributes = textglass.copyAttributes(attributesObj);
     var parent = attributesObj;
 
     while(parent.parentId) {
@@ -326,7 +342,7 @@ textglass.getAttributes = function(domain, patternId, input) {
         break;
       }
 
-      for(var parentAttribute in parent.attributes) {
+      for(var parentAttribute in textglass.copyAttributes(parent)) {
         if(!attributes[parentAttribute]) {
           attributes[parentAttribute] = parent.attributes[parentAttribute];
         }
@@ -338,19 +354,25 @@ textglass.getAttributes = function(domain, patternId, input) {
     return attributes;
   } else {
     return  {
-      patternId: patternId,
+      patternId: patternId
     };
   }
 };
 
-textglass.copyAttributes = function(attributes) {
+textglass.copyAttributes = function(attributesObj) {
   var copy = {};
 
-  for(var attribute in attributes) {
-    copy[attribute] = attributes[attribute];
+  for(var attribute in attributesObj.attributes) {
+    copy[attribute] = attributesObj.attributes[attribute];
   }
+
+  for(var attribute in attributesObj.attributeTransformers) {
+    var attributeTransformer = attributesObj.attributeTransformers[attribute];
+    copy[attribute] = 'TODO';
+  }
+  
   return copy;
-}
+};
 
 textglass.isPatternValid = function(pattern, matchedTokens) {
   var lastFound = -1;
@@ -360,7 +382,7 @@ textglass.isPatternValid = function(pattern, matchedTokens) {
 
     var found = matchedTokens.indexOf(patternToken);
 
-    if(found == -1 && (pattern.patternType === 'SimpleAnd' || pattern.patternType === 'SimpleOrderedAnd')) {
+    if(found === -1 && (pattern.patternType === 'SimpleAnd' || pattern.patternType === 'SimpleOrderedAnd')) {
       return false;
     }
 

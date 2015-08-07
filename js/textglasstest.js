@@ -16,12 +16,12 @@ textglasstest.loadURL = function(testURL, callback) {
 
   textglass.getURL(loading.test, loading, testURL, function() {
     if(loading.test.status === 2) {
-      var fail = textglasstest.loadObject(loading.test.json);
+      var ret = textglasstest.loadObject(loading.test.json);
 
-      if(fail) {
-        callback('fail', fail);
+      if(!ret || ret.error) {
+        callback('fail', ret ? ret.msg : 'Unknown error');
       } else {
-        callback('pass')
+        callback('pass', ret.msg);
       }
     }
   });
@@ -32,22 +32,24 @@ textglasstest.loadObject = function(test) {
   var domainVersion = test.domainVersion;
 
   if(test.type !== 'test') {
-    return 'Invalid test file';
+    return {error: true, msg: 'Invalid test file'};
   }
 
   textglass.debug(1, 'Testing:', domainName, 'Version:', domainVersion);
 
   if(!textglass.domains[domainName]) {
-    return 'Domain not found: ' + domainName;
+    return {error: true, msg: 'Domain not found: ' + domainName};
   }
 
   var domain = textglass.domains[domainName];
 
   if(domainVersion !== domain.version) {
-    return 'Domain versions do not match: ' + domainVersion;
+    return {error: true, msg: 'Domain versions do not match: ' + domainVersion};
   }
 
-  for(var i = 0; i < test.tests.length; i++) {
+  var i;
+
+  for(i = 0; i < test.tests.length; i++) {
     var testObj = test.tests[i];
 
     textglass.debug(2, 'test input', testObj.input);
@@ -57,14 +59,14 @@ textglasstest.loadObject = function(test) {
     textglass.debug(2, 'test result', result);
 
     if(result && (!testObj.resultPatternId) || (result && result.patternId !== testObj.resultPatternId)) {
-      return 'Test failed, ' + result.patternId + ' != ' + testObj.resultPatternId;
+      return {error: true, msg: 'Test failed, ' + result.patternId + ' != ' + testObj.resultPatternId};
     }
 
     for(var attribute in testObj.resultAttributes) {
       var value = testObj.resultAttributes[attribute];
 
       if(result[attribute] !== value) {
-        return 'Test failed for ' + testObj.resultPatternId + '.' + attribute + ', ' + value + ' != ' + result[attribute];
+        return {error: true, msg: 'Test failed for ' + testObj.resultPatternId + '.' + attribute + ', ' + value + ' != ' + result[attribute]};
       }
     }
 
@@ -72,4 +74,8 @@ textglasstest.loadObject = function(test) {
   }
 
   textglass.debug(1, 'All tests passed');
+
+  return {
+    msg: 'All tests passed (' + i + ')'
+  };
 };

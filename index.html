@@ -70,26 +70,34 @@
       var test = get('test').value;
       var input = get('input').value;
 
-      textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg) {
-        textglass.debug(3, 'textglass.loadURL() callback', state, msg);
+      textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg, domain) {
+        textglass.debug(3, 'textglass.loadURL() callback', state, msg, domain);
 
         get('clientout').innerHTML = state + (msg ? ': ' + msg : '');
 
-        if(state === 'ready') {
-          textglasstest.loadURL(test, function(state, msg) {
-            textglass.debug(3, 'textglasstest.loadURL() callback', state, msg);
+        if(domain) {
+          if(test) {
+            textglasstest.loadURL(test, function(state, msg) {
+              textglass.debug(3, 'textglasstest.loadURL() callback', state, msg);
 
-            get('testout').innerHTML = state + (msg ? ': ' + msg : '');
-          });
+              get('testout').innerHTML = state + (msg ? ': ' + msg : '');
+              
+              button.disabled = false;
+            });
+          }
 
-          var inputout = textglass.domains[msg].classify(input);
+          if(input) {
+            var inputout = textglass.domains[domain].classify(input);
 
-          textglass.debug(1, 'input result', inputout);
+            textglass.debug(1, 'input result', inputout);
 
-          get('inputout').innerHTML = JSON.stringify(inputout, null, 2);
+            get('inputout').innerHTML = JSON.stringify(inputout, null, 2);
+          }
         }
 
-        button.disabled = false;
+        if(!test) {
+          button.disabled = false;
+        }
       });
     }
 
