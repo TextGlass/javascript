@@ -89,7 +89,7 @@
           if(input) {
             var inputout = textglass.domains[domain].classify(input);
 
-            textglass.debug(1, 'input result', inputout);
+            textglass.debug(2, 'input result', inputout);
 
             get('inputout').innerHTML = JSON.stringify(inputout, null, 2);
           }

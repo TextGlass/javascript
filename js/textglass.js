@@ -329,7 +329,7 @@ textglass.classify = function(domain, input) {
     }
   }
 
-  textglass.debug(1, 'Winner:', (winner ? winner.patternId : 'null'));
+  textglass.debug(2, 'Winner:', (winner ? winner.patternId : 'null'));
 
   if(winner) {
     return textglass.getAttributes(domain, winner.patternId, input);
