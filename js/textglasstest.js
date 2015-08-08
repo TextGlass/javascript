@@ -66,9 +66,10 @@ textglasstest.loadObject = function(test) {
 
     for(var attribute in testObj.resultAttributes) {
       var value = testObj.resultAttributes[attribute];
+      var expected = result ? result[attribute] : undefined;
 
-      if(result[attribute] !== value) {
-        return {error: true, msg: 'Test failed for ' + testObj.resultPatternId + '.' + attribute + ', ' + value + ' != ' + result[attribute]};
+      if(expected !== value) {
+        return {error: true, msg: 'Test failed for ' + testObj.resultPatternId + '.' + attribute + ', ' + value + ' != ' + expected};
       }
     }
 

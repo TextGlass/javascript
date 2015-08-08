@@ -324,7 +324,7 @@ textglass.classify = function(domain, input) {
         }
       }
 
-      textglass.debug(2, 'Hit:', token, 'candidates:', matched);
+      textglass.debug(3, 'Hit:', token, 'candidates:', matched);
     }
   }
 
@@ -333,6 +333,8 @@ textglass.classify = function(domain, input) {
       var candidate = candidates[i];
 
       if(textglass.isPatternValid(candidate, matchedTokens)) {
+        textglass.debug(2, 'candidate:', candidate);
+        
         if(!winner) {
           winner = candidate;
         } else if(candidate.rank > winner.rank) {
@@ -443,7 +445,7 @@ textglass.isPatternValid = function(pattern, matchedTokens) {
 };
 
 textglass.getPatternRank = function(pattern) {
-  var rank = pattern.rankValue;
+  var rank = pattern.rankValue || 0;
 
   if(pattern.rankType === 'Weak') {
     rank += 100000;
@@ -475,8 +477,6 @@ textglass.compileTransformers = function(node) {
   
   for(var i = 0; i < node.transformers.length; i++) {
     var transformer = node.transformers[i];
-
-    textglass.debug(2, 'Found transformer:', transformer.type);
 
     var compiled = textglass.getTransformer(transformer);
 
