@@ -372,9 +372,11 @@ textglass.getAttributes = function(domain, patternId, input) {
         break;
       }
 
-      for(var parentAttribute in textglass.copyAttributes(parent, input)) {
+      var parentAttributes = textglass.copyAttributes(parent, input);
+
+      for(var parentAttribute in parentAttributes) {
         if(!attributes[parentAttribute]) {
-          attributes[parentAttribute] = parent.attributes[parentAttribute];
+          attributes[parentAttribute] = parentAttributes[parentAttribute];
         }
       }
     }
@@ -493,6 +495,12 @@ textglass.compileTransformers = function(node) {
 textglass.getTransformer = function(transformer) {
   if(transformer.type === 'LowerCase') {
     return textglass.transformers.LowerCase;
+  } else if(transformer.type === 'UpperCase') {
+    return textglass.transformers.UpperCase;
+  } else if(transformer.type === 'ReplaceFirst') {
+    return function(input) {
+      return textglass.transformers.ReplaceFirst(input, transformer.parameters.find, transformer.parameters.replaceWith);
+    };
   } else if(transformer.type === 'ReplaceAll') {
     return function(input) {
       return textglass.transformers.ReplaceAll(input, transformer.parameters.find, transformer.parameters.replaceWith);
@@ -500,6 +508,10 @@ textglass.getTransformer = function(transformer) {
   } else if(transformer.type === 'SplitAndGet') {
     return function(input) {
       return textglass.transformers.SplitAndGet(input, transformer.parameters.delimeter, transformer.parameters.get);
+    };
+  } else if(transformer.type === 'Substring') {
+    return function(input) {
+      return textglass.transformers.Substring(input, transformer.parameters.start, transformer.parameters.maxLength);
     };
   } else if(transformer.type === 'IsNumber') {
     return textglass.transformers.IsNumber;
@@ -512,8 +524,30 @@ textglass.transformers.LowerCase = function(input) {
   return input.toLowerCase();
 };
 
+textglass.transformers.UpperCase = function(input) {
+  return input.toUpperCase();
+};
+
+textglass.transformers.ReplaceFirst = function(input, find, replaceWith) {
+  var pos = input.indexOf(find);
+
+  if(pos > 0) {
+    return input.substring(0, pos) + replaceWith + input.substring(pos + find.length);
+  }
+
+  return input;
+};
+
 textglass.transformers.ReplaceAll = function(input, find, replaceWith) {
-  return textglass.split(input, [find]).join(replaceWith);
+  var pos = input.indexOf(find);
+
+  while(pos >= 0) {
+    input = input.substring(0, pos) + replaceWith + input.substring(pos + find.length);
+
+    pos = input.indexOf(find, pos + find.length);
+  }
+
+  return input;
 };
 
 textglass.transformers.SplitAndGet = function(input, delimeter, get) {
@@ -524,6 +558,20 @@ textglass.transformers.SplitAndGet = function(input, delimeter, get) {
   }
 
   return parts[get];
+};
+
+textglass.transformers.Substring = function(input, start, maxLength) {
+  maxLength = maxLength || -1;
+  
+  if(start >= input.length) {
+    return undefined;
+  }
+
+  if(maxLength >= 0 && (maxLength + start) <= input.length) {
+    return input.substring(start, maxLength + start);
+  }
+
+  return input.substring(start);
 };
 
 textglass.transformers.IsNumber = function(input) {
