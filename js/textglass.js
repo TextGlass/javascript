@@ -139,7 +139,7 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   var domainName = pattern.domain;
   var domainVersion = pattern.domainVersion;
 
-  if(pattern.type !== 'pattern') {
+  if(pattern.type !== 'pattern' || !pattern.patternSet) {
     return {error: true, msg: 'Invalid pattern file'};
   }
   
@@ -147,6 +147,20 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
     if(attribute.type !== 'attribute' || attribute.domain !== domainName ||
         attribute.domainVersion !== domainVersion || !attribute.attributes) {
       return {error: true, msg: 'Invalid attribute file'};
+    }
+  }
+
+  if(patternPatch) {
+    if(patternPatch.type !== 'patternPatch' || patternPatch.domain !== domainName ||
+        patternPatch.domainVersion !== domainVersion || !patternPatch.patternSet) {
+      return {error: true, msg: 'Invalid pattern patch file'};
+    }
+  }
+
+  if(attributePatch) {
+    if(attributePatch.type !== 'attributePatch' || attributePatch.domain !== domainName ||
+        attributePatch.domainVersion !== domainVersion || !attributePatch.attributes) {
+      return {error: true, msg: 'Invalid attribute patch file'};
     }
   }
 
@@ -162,6 +176,20 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
     pattern.inputParser = {};
   }
 
+  if(patternPatch && patternPatch.inputParser) {
+    if(patternPatch.inputParser.transformers) {
+      pattern.inputParser.transformers = patternPatch.inputParser.transformers;
+    }
+
+    if(patternPatch.inputParser.tokenSeperators) {
+      pattern.inputParser.tokenSeperators = patternPatch.inputParser.tokenSeperators;
+    }
+
+    if(patternPatch.inputParser.ngramConcatSize) {
+      pattern.inputParser.ngramConcatSize = patternPatch.inputParser.ngramConcatSize;
+    }
+  }
+
   if(pattern.inputParser.transformers && pattern.inputParser.transformers.length > 0) {
     var error = textglass.compileTransformers(pattern.inputParser);
 
@@ -172,50 +200,78 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
 
   pattern.patternIndex = {};
 
-  for(var i = 0; i < pattern.patternSet.patterns.length; i++) {
-    var patternObj = pattern.patternSet.patterns[i];
+  for(var p = 0; p < 2; p++)
+  {
+    var patterns = [];
 
-    if(patternObj.rankType !== 'Strong' && patternObj.rankType !== 'Weak' &&
-        patternObj.rankType !== 'None') {
-      return {error: true, msg: 'Invalid rankType: ' + patternObj.rankType};
+    if(!p && pattern.patternSet.patterns) {
+      patterns = pattern.patternSet.patterns;
+    } else if(patternPatch && patternPatch.patternSet.patterns) {
+      patterns = patternPatch.patternSet.patterns;
     }
 
-    if(patternObj.patternType !== 'Simple' && patternObj.patternType !== 'SimpleAnd' &&
-        patternObj.patternType !== 'SimpleOrderedAnd') {
-      return {error: true, msg: 'Invalid patternType: ' + patternObj.patternType};
-    }
+    for(var i = 0; i < patterns.length; i++) {
+      var patternObj = patterns[i];
 
-    patternObj.rank = textglass.getPatternRank(patternObj);
-
-    textglass.debug(3, 'Found pattern:', patternObj.patternId,
-        'tokens:', patternObj.patternTokens, 'rank:', patternObj.rank );
-
-    for(var j = 0; j < patternObj.patternTokens.length; j++) {
-      var token = patternObj.patternTokens[j];
-
-      var patternList = pattern.patternIndex[token];
-
-      if(!patternList) {
-        patternList = [];
-        pattern.patternIndex[token] = patternList;
+      if(patternObj.rankType !== 'Strong' && patternObj.rankType !== 'Weak' &&
+          patternObj.rankType !== 'None') {
+        return {error: true, msg: 'Invalid rankType: ' + patternObj.rankType};
       }
 
-      patternList.push(patternObj);
+      if(patternObj.patternType !== 'Simple' && patternObj.patternType !== 'SimpleAnd' &&
+          patternObj.patternType !== 'SimpleOrderedAnd') {
+        return {error: true, msg: 'Invalid patternType: ' + patternObj.patternType};
+      }
+
+      patternObj.rank = textglass.getPatternRank(patternObj);
+
+      textglass.debug(3, 'Found pattern:', patternObj.patternId,
+          'tokens:', patternObj.patternTokens, 'rank:', patternObj.rank );
+
+      for(var j = 0; j < patternObj.patternTokens.length; j++) {
+        var token = patternObj.patternTokens[j];
+
+        var patternList = pattern.patternIndex[token];
+
+        if(!patternList) {
+          patternList = [];
+          pattern.patternIndex[token] = patternList;
+        }
+
+        patternList.push(patternObj);
+      }
     }
+  }
+
+  if(patternPatch && patternPatch.patternSet.defaultId) {
+    pattern.patternSet.defaultId = patternPatch.patternSet.defaultId;
   }
 
   var attributeCount = 0;
 
+  if(!attribute) {
+    attribute = {attributes: (pattern.attributes ? pattern.attributes : {})};
+  }
+
   if(pattern.attributes) {
-    if(!attribute) {
-      attribute = {attributes: pattern.attributes};
-    } else {
-      for(var name in pattern.attributes) {
-        var pattribute = pattern.attributes[name];
-        if(!attribute.attributes[name]) {
-          attribute.attributes[name] = pattribute;
-        }
+    for(var name in pattern.attributes) {
+      if(!attribute.attributes[name]) {
+        attribute.attributes[name] = pattern.attributes[name];
       }
+    }
+  }
+
+  if(patternPatch && patternPatch.attributes) {
+    for(var name in patternPatch.attributes) {
+      if(!attribute.attributes[name]) {
+        attribute.attributes[name] = patternPatch.attributes[name];
+      }
+    }
+  }
+
+  if(attributePatch) {
+    for(var name in attributePatch.attributes) {
+      attribute.attributes[name] = attributePatch.attributes[name];
     }
   }
 
@@ -245,7 +301,7 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   domain.name = domainName;
   domain.version = domainVersion;
   domain.pattern = pattern;
-  domain.attribute = attribute || {attributes:{}};
+  domain.attribute = attribute;
   domain.classify = function(input) {
     return textglass.classify(domain, input);
   };

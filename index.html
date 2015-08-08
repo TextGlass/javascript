@@ -119,8 +119,10 @@
 
       var pattern = get('pattern').value;
       var attribute = get('attribute').value;
+      var patternPatch = get('patternpatch').value;
+      var attributePatch = get('attributepatch').value;
 
-      textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg, domain) {
+      textglass.loadURLs(pattern, attribute, patternPatch, attributePatch, function(state, msg, domain) {
         textglass.debug(3, 'textglass.loadURL() callback', state, msg, domain);
 
         get('clientout').innerHTML = state + (msg ? ': ' + msg : '');
