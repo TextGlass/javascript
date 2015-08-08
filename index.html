@@ -197,11 +197,15 @@
 
         button.disabled = true;
 
+        var start = Date.now();
+
         var inputout = textglass.domains[domain].classify(input);
+
+        var end = Date.now() - start;
 
         textglass.debug(2, 'input result', inputout);
 
-        get('inputout').innerHTML = JSON.stringify(inputout, null, 2);
+        get('inputout').innerHTML = '<pre>' + JSON.stringify(inputout, null, 2) + '</pre>time: ' + end + 'ms';
 
         button.disabled = false;
       }
