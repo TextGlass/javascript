@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nodejs nodejs_main.js
+nodejs nodejs_main.js "$@"
