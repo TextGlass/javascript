@@ -21,6 +21,10 @@
 
   <h1>TextGlass Javascript Client</h1>
 
+  <div id="out" class="out"></div>
+  <br>
+
+  <br>
   Pattern file: <input id="pattern" class="input" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/patterns.json"><br>
   <br>
   Attribute file: <input id="attribute" class="input"  type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/attributes.json"><br>
@@ -29,19 +33,33 @@
   <br>
   Attribute Patch file: <input id="attributepatch" class="input" type="text" size="60" value=""><br>
   <br>
+  <input id="loaddomain" type="button" value="Load domain" onclick="loadDomain()"><br>
+  <br>
   <div id="clientout" class="out"></div>
+  <br>
+
+  <br>
+  Domains loaded: <span id="domains"></span><br>
+  <br>
+
   <br>
   Test file: <input id="test" class="input" type="text" size="60" value="http://www.rezsoft.org/textglass/reference/domains/a/test.json"><br>
   <br>
+  <input id="loadtest" type="button" value="Test domain" onclick="testDomain()"><br>
+  <br>
   <div id="testout" class="out"></div>
+  <br>
+
   <br>
   Test input: <input id="input" class="input" type="text" size="80" value=""><br>
   <br>
+  Domain: <select id="domainselect">
+    <option value="none">None</option>
+  </select><br>
+  <br>
+  <input id="loadinput" type="button" value="Test input" onclick="testInput()"><br>
+  <br>
   <div id="inputout" class="out"></div>
-  <br>
-  <input id="load" type="button" value="Load" onclick="load()"><br>
-  <br>
-  <div id="out" class="out"></div>
   
   <script>
     function get(id) {
@@ -54,51 +72,103 @@
 
     textglass.debugLevel = 3;
 
-    function load() {
-      textglass.debug(3, 'Load button clicked');
+    function loadDomain() {
+      textglass.debug(3, 'loaddomain button clicked');
 
       get('clientout').innerHTML = 'Loading...';
-      get('testout').innerHTML = '';
-      get('inputout').innerHTML = '';
       
-      var button = get('load');
+      var button = get('loaddomain');
 
       button.disabled = true;
 
       var pattern = get('pattern').value;
       var attribute = get('attribute').value;
-      var test = get('test').value;
-      var input = get('input').value;
 
       textglass.loadURLs(pattern, attribute, undefined, undefined, function(state, msg, domain) {
         textglass.debug(3, 'textglass.loadURL() callback', state, msg, domain);
 
         get('clientout').innerHTML = state + (msg ? ': ' + msg : '');
 
-        if(domain) {
-          if(test) {
-            textglasstest.loadURL(test, function(state, msg) {
-              textglass.debug(3, 'textglasstest.loadURL() callback', state, msg);
+        updateDomains();
 
-              get('testout').innerHTML = state + (msg ? ': ' + msg : '');
-              
-              button.disabled = false;
-            });
-          }
-
-          if(input) {
-            var inputout = textglass.domains[domain].classify(input);
-
-            textglass.debug(2, 'input result', inputout);
-
-            get('inputout').innerHTML = JSON.stringify(inputout, null, 2);
-          }
-        }
-
-        if(!test) {
-          button.disabled = false;
-        }
+        button.disabled = false;
       });
+    }
+
+    function updateDomains() {
+      var domains = get('domains');
+      var select = get('domainselect');
+
+      domains.innerHTML = '';
+      select.innerHTML = '';
+
+      for(var domain in textglass.domains) {
+        if(domains.innerHTML) {
+          domains.innerHTML += ', ';
+        }
+
+        domains.innerHTML += domain;
+
+        var option = document.createElement("option");
+        option.value = domain;
+        option.innerHTML = domain;
+        select.appendChild(option);
+      }
+
+      if(domains.innerHTML) {
+        get('loadtest').disabled = false;
+        get('loadinput').disabled = false;
+      }
+    }
+
+    function testDomain() {
+      textglass.debug(3, 'testdomain button clicked');
+
+      get('testout').innerHTML = 'Testing...';
+
+      var test = get('test').value;
+
+      if(test) {
+        var button = get('loadtest');
+        
+        button.disabled = true;
+        
+        textglasstest.loadURL(test, function(state, msg) {
+          textglass.debug(3, 'textglasstest.loadURL() callback', state, msg);
+
+          get('testout').innerHTML = state + (msg ? ': ' + msg : '');
+
+          button.disabled = false;
+        });
+      }
+    }
+
+    function testInput() {
+      textglass.debug(3, 'testinput button clicked');
+
+      get('inputout').innerHTML = 'Testing...';
+
+      var domain = get('domainselect').value;
+      var input = get('input').value;
+
+      if(!textglass.domains[domain]) {
+        get('inputout').innerHTML = 'Domain not found: ' + domain;
+        return;
+      }
+
+      if(input) {
+        var button = get('loadinput');
+
+        button.disabled = true;
+
+        var inputout = textglass.domains[domain].classify(input);
+
+        textglass.debug(2, 'input result', inputout);
+
+        get('inputout').innerHTML = JSON.stringify(inputout, null, 2);
+
+        button.disabled = false;
+      }
     }
 
     function main() {
@@ -106,7 +176,11 @@
         get('out').innerHTML = 'TextGlass Javascript Client ' + textglass.version + ' LOADED!';
       } else {
         get('out').innerHTML = 'TextGlass ERROR';
+        get('loaddomain').disabled = true;
       }
+      
+      get('loadtest').disabled = true;
+      get('loadinput').disabled = true;
     }
   </script>
 

@@ -157,7 +157,6 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   }
 
   var domain = {};
-  textglass.domains[domainName] = domain;
 
   if(!pattern.inputParser) {
     pattern.inputParser = {};
@@ -175,6 +174,16 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
 
   for(var i = 0; i < pattern.patternSet.patterns.length; i++) {
     var patternObj = pattern.patternSet.patterns[i];
+
+    if(patternObj.rankType !== 'Strong' && patternObj.rankType !== 'Weak' &&
+        patternObj.rankType !== 'None') {
+      return {error: true, msg: 'Invalid rankType: ' + patternObj.rankType};
+    }
+
+    if(patternObj.patternType !== 'Simple' && patternObj.patternType !== 'SimpleAnd' &&
+        patternObj.patternType !== 'SimpleOrderedAnd') {
+      return {error: true, msg: 'Invalid patternType: ' + patternObj.patternType};
+    }
 
     patternObj.rank = textglass.getPatternRank(patternObj);
 
@@ -240,6 +249,8 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   domain.classify = function(input) {
     return textglass.classify(domain, input);
   };
+
+  textglass.domains[domainName] = domain;
 
   var end = Date.now() - start;
 
