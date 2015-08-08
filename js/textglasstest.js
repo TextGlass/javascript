@@ -4,9 +4,7 @@ if(typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports = textglasstest;
 }
 
-if(!textglass) {
-  var textglass = (require ? require('./textglass') : {});
-}
+var textglass = (textglass ? textglass : (require ? require('./textglass') : {}));
 
 textglasstest.loadURL = function(testURL, callback) {
   textglass.debug(1, 'testURL:', testURL);
