@@ -60,8 +60,9 @@ textglasstest.loadObject = function(test) {
 
     textglass.debug(2, 'test result', result);
 
-    if(result && (!testObj.resultPatternId) || (result && result.patternId !== testObj.resultPatternId)) {
-      return {error: true, msg: 'Test failed, ' + result.patternId + ' != ' + testObj.resultPatternId};
+    if((!result && testObj.resultPatternId) || (result && !testObj.resultPatternId) ||
+        (result && result.patternId !== testObj.resultPatternId)) {
+      return {error: true, msg: 'Test failed, ' + (result ? result.patternId : result) + ' != ' + testObj.resultPatternId};
     }
 
     for(var attribute in testObj.resultAttributes) {

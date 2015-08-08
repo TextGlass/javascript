@@ -351,6 +351,8 @@ textglass.classify = function(domain, input) {
 
   if(winner) {
     return textglass.getAttributes(domain, winner.patternId, input);
+  } else if(domain.pattern.patternSet.defaultId) {
+    return textglass.getAttributes(domain, domain.pattern.patternSet.defaultId, input);
   } else {
     return null;
   }
