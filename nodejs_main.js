@@ -15,6 +15,7 @@ var attributePatch;
 var tests = [];
 
 var testString;
+var warmup;
 
 var failure = false;
 
@@ -50,6 +51,8 @@ for(var i = 0; i < args.length; i++) {
     tests.push(getParam(args, ++i, '-t file parameter missing'));
   } else if(option.indexOf('-') !== 0 && !testString) {
     testString = option;
+  } else if(option === '-w') {
+    warmup = getParam(args, ++i, '-w iterations missing');
   } else if(option === '-q') {
     textglass.debugLevel = 0;
   } else if(option === '-v') {
@@ -65,6 +68,10 @@ for(var i = 0; i < args.length; i++) {
 if(!pattern) {
   printHelp();
   throw 'Pattern file required';
+}
+
+if(warmup > 0) {
+  runWarmup(warmup, pattern, patternPatch, attribute, attributePatch, tests);
 }
 
 textglass.debug(1, 'Pattern file: \'' + pattern + '\'');
@@ -164,4 +171,38 @@ function getParam(args, pos, error) {
   } else {
     return args[pos];
   }
+}
+
+function runWarmup(warmup, pattern, patternPatch, attribute, attributePatch, tests) {
+  textglass.debug(0, 'Warmup ' + warmup + ' iterations(s)...');
+
+  var origDebug = textglass.debugLevel;
+  textglass.debugLevel = -1;
+
+  var iterations = 0;
+
+  while(iterations < warmup) {
+    var patternFile = require('./' + pattern);
+    var attributeFile = attribute ? require('./' + attribute) : undefined;
+    var patternPatchFile = patternPatch ? require('./' + patternPatch) : undefined;
+    var attributePatchFile = attributePatch ? require('./' + attributePatch) : undefined;
+
+    var result = textglass.loadObjects(patternFile, attributeFile, patternPatchFile, attributePatchFile);
+
+    for(var i = 0; i < tests.length; i++) {
+      var test = tests[i];
+
+      var testFile = require('./' + test);
+
+      textglasstest.loadObject(testFile);
+    }
+
+    delete textglass.domains[result.domain];
+
+    iterations++;
+  }
+
+  textglass.debugLevel = origDebug;
+
+  textglass.debug(0, 'Warmup completed');
 }

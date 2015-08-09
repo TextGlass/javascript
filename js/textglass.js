@@ -12,7 +12,10 @@ textglass.domains = {};
 textglass.debug = textglass.debug || function(level, s) {
   if(level <= textglass.debugLevel) {
     var params = Array.prototype.slice.call(arguments, 0);
-    params[0] = 'TextGlass ' + level + ':';
+    params[0] = 'TextGlass: ';
+    for(var i = 0; i < level; i++) {
+      params[0] += '  ';
+    }
     console.log.apply(console, params);
   }
 };
@@ -139,27 +142,30 @@ textglass.loadObjects = function(pattern, attribute, patternPatch, attributePatc
   var domainName = pattern.domain;
   var domainVersion = pattern.domainVersion;
 
-  if(pattern.type !== 'pattern' || !pattern.patternSet) {
+  if(pattern.type !== 'pattern' || !pattern.patternSet || pattern.TextGlassSpecVersion !== 1.0) {
     return {error: true, msg: 'Invalid pattern file'};
   }
   
   if(attribute) {
     if(attribute.type !== 'attribute' || attribute.domain !== domainName ||
-        attribute.domainVersion !== domainVersion || !attribute.attributes) {
+        attribute.domainVersion !== domainVersion || !attribute.attributes ||
+        attribute.TextGlassSpecVersion !== 1.0) {
       return {error: true, msg: 'Invalid attribute file'};
     }
   }
 
   if(patternPatch) {
     if(patternPatch.type !== 'patternPatch' || patternPatch.domain !== domainName ||
-        patternPatch.domainVersion !== domainVersion || !patternPatch.patternSet) {
+        patternPatch.domainVersion !== domainVersion || !patternPatch.patternSet ||
+        patternPatch.TextGlassSpecVersion !== 1.0) {
       return {error: true, msg: 'Invalid pattern patch file'};
     }
   }
 
   if(attributePatch) {
     if(attributePatch.type !== 'attributePatch' || attributePatch.domain !== domainName ||
-        attributePatch.domainVersion !== domainVersion || !attributePatch.attributes) {
+        attributePatch.domainVersion !== domainVersion || !attributePatch.attributes ||
+        attributePatch.TextGlassSpecVersion !== 1.0) {
       return {error: true, msg: 'Invalid attribute patch file'};
     }
   }
@@ -329,7 +335,7 @@ textglass.classify = function(domain, input) {
 
       input = compiledTransformer(input);
 
-      if (typeof input === "undefined") {
+      if (typeof input === 'undefined') {
         throw 'Transformer error on input';
       }
     }
@@ -464,7 +470,7 @@ textglass.copyAttributes = function(attributesObj, input) {
 
       value = compiledTransformer(value);
 
-      if (typeof value === "undefined") {
+      if (typeof value === 'undefined') {
         value = attributeTransformer.defaultValue || '';
         break;
       }
