@@ -11,6 +11,11 @@
       font-family: "Courier New", Courier, monospace;
       padding-left: 20px;
     }
+    .err {
+      color: #FF0000;
+      font-family: "Courier New", Courier, monospace;
+      padding-left: 20px;
+    }
     .input {
       width: 100%;
       max-width: 500px;
@@ -112,6 +117,7 @@
       textglass.debug(3, 'loaddomain button clicked');
 
       get('clientout').innerHTML = 'Loading...';
+      get('clientout').className = 'out';
       
       var button = get('loaddomain');
 
@@ -126,6 +132,12 @@
         textglass.debug(3, 'textglass.loadURL() callback', state, msg, domain);
 
         get('clientout').innerHTML = state + (msg ? ': ' + msg : '');
+
+        if(state === 'error') {
+          get('clientout').className = 'err';
+        } else {
+          get('clientout').className = 'out';
+        }
 
         updateDomains();
 
@@ -163,6 +175,7 @@
       textglass.debug(3, 'testdomain button clicked');
 
       get('testout').innerHTML = 'Testing...';
+      get('testout').className = 'out';
 
       var test = get('test').value;
 
@@ -176,6 +189,12 @@
 
           get('testout').innerHTML = state + (msg ? ': ' + msg : '');
 
+          if(state === 'error') {
+            get('testout').className = 'err';
+          } else {
+            get('testout').className = 'out';
+          }
+
           button.disabled = false;
         });
       }
@@ -185,12 +204,14 @@
       textglass.debug(3, 'testinput button clicked');
 
       get('inputout').innerHTML = 'Testing...';
+      get('inputout').className = 'out';
 
       var domain = get('inputdomainselect').value;
       var input = get('input').value;
 
       if(!textglass.domains[domain]) {
         get('inputout').innerHTML = 'Domain not found: ' + domain;
+        get('inputout').className = 'err';
         return;
       }
 
@@ -216,8 +237,10 @@
     function main() {
       if(textglass.loaded) {
         get('out').innerHTML = 'TextGlass Javascript Client ' + textglass.version + ' LOADED!';
+        get('out').className = 'out';
       } else {
         get('out').innerHTML = 'TextGlass ERROR';
+        get('out').className = 'err';
         get('loaddomain').disabled = true;
       }
       

@@ -21,7 +21,7 @@ textglasstest.loadURL = function(testURL, callback) {
       var ret = textglasstest.loadObject(loading.test.json);
 
       if(!ret || ret.error) {
-        callback('fail', ret ? ret.msg : 'Unknown error');
+        callback('error', ret ? ret.msg : 'Unknown error');
       } else {
         callback('pass', ret.msg);
       }
