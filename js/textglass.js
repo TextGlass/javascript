@@ -686,6 +686,6 @@ var textglass = (function(textglass) {
 
 var module = module || undefined;
 
-if(typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+if(typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') {
   module.exports = textglass;
 }
