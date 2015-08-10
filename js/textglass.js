@@ -1,4 +1,5 @@
 "use strict";
+
 var textglass = (function(textglass) {
   textglass.version = '1.0.0';
   textglass.debugLevel = textglass.debugLevel || -1;

@@ -1,4 +1,5 @@
 "use strict";
+
 var require = require || undefined;
 var textglass = textglass || (typeof(require) === 'function' ? require('./textglass') : {});
 
