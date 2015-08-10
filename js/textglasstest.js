@@ -1,3 +1,4 @@
+"use strict";
 var textglass = textglass || (typeof(require) === 'function' ? require('./textglass') : {});
 
 var textglasstest = (function(textglasstest, textglass) {
