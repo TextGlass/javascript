@@ -1,4 +1,4 @@
-var textglass = textglass || (require ? require('./textglass') : {});
+var textglass = textglass || (typeof(require) === 'function' ? require('./textglass') : {});
 
 var textglasstest = (function(textglasstest, textglass) {
   textglasstest.loadURL = function(testURL, callback) {
@@ -86,6 +86,8 @@ var textglasstest = (function(textglasstest, textglass) {
   return textglasstest;
 })(textglasstest || {}, textglass || {});
 
-if(typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+var module = module || undefined;
+
+if(typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') {
   module.exports = textglasstest;
 }

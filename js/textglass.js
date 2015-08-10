@@ -684,6 +684,8 @@ var textglass = (function(textglass) {
   return textglass;
 })(textglass || {});
 
+var module = module || undefined;
+
 if(typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports = textglass;
 }
