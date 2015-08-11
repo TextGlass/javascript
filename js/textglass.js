@@ -32,6 +32,7 @@ var textglass = (function(textglass) {
 
     loading.status = 1;
     loading.callback = callback;
+    loading.start = Date.now();
 
     loading.pattern = {};
     loading.attribute = {};
@@ -120,6 +121,8 @@ var textglass = (function(textglass) {
         return;
       }
     }
+
+    loading.pattern.json._diff = Date.now() - loading.start;
 
     var ret = textglass.loadObjects(loading.pattern.json, loading.attribute.json,
         loading.patternPatch.json, loading.attributePatch.json);
@@ -315,7 +318,8 @@ var textglass = (function(textglass) {
     return {
       msg: 'Loaded ' + domainName + ', version: ' + domainVersion +
           ', patterns: ' + domain.pattern.patternSet.patterns.length +
-          ', attributes: ' + attributeCount + ', time: ' + end + 'ms',
+          ', attributes: ' + attributeCount + ', time: ' + end + 'ms' +
+          (pattern._diff ? ' (' + pattern._diff + 'ms)' : ''),
       domain: domainName,
       domainVersion: domainVersion
     };
