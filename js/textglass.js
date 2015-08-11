@@ -556,39 +556,39 @@ var textglass = (function(textglass) {
 
   function getTransformer(transformer) {
     if(transformer.type === 'LowerCase') {
-      return LowerCase;
+      return t_LowerCase;
     } else if(transformer.type === 'UpperCase') {
-      return UpperCase;
+      return t_UpperCase;
     } else if(transformer.type === 'ReplaceFirst') {
       return function(input) {
-        return ReplaceFirst(input, transformer.parameters.find, transformer.parameters.replaceWith);
+        return t_ReplaceFirst(input, transformer.parameters.find, transformer.parameters.replaceWith);
       };
     } else if(transformer.type === 'ReplaceAll') {
       return function(input) {
-        return ReplaceAll(input, transformer.parameters.find, transformer.parameters.replaceWith);
+        return t_ReplaceAll(input, transformer.parameters.find, transformer.parameters.replaceWith);
       };
     } else if(transformer.type === 'SplitAndGet') {
       return function(input) {
-        return SplitAndGet(input, transformer.parameters.delimeter, transformer.parameters.get);
+        return t_SplitAndGet(input, transformer.parameters.delimeter, transformer.parameters.get);
       };
     } else if(transformer.type === 'Substring') {
       return function(input) {
-        return Substring(input, transformer.parameters.start, transformer.parameters.maxLength);
+        return t_Substring(input, transformer.parameters.start, transformer.parameters.maxLength);
       };
     } else if(transformer.type === 'IsNumber') {
-      return IsNumber;
+      return t_IsNumber;
     }
   }
 
-  function LowerCase(input) {
+  function t_LowerCase(input) {
     return input.toLowerCase();
   }
 
-  function UpperCase(input) {
+  function t_UpperCase(input) {
     return input.toUpperCase();
   }
 
-  function ReplaceFirst(input, find, replaceWith) {
+  function t_ReplaceFirst(input, find, replaceWith) {
     var pos = input.indexOf(find);
 
     if(pos > 0) {
@@ -598,7 +598,7 @@ var textglass = (function(textglass) {
     return input;
   }
 
-  function ReplaceAll(input, find, replaceWith) {
+  function t_ReplaceAll(input, find, replaceWith) {
     var pos = input.indexOf(find);
 
     while(pos >= 0) {
@@ -610,7 +610,7 @@ var textglass = (function(textglass) {
     return input;
   }
 
-  function SplitAndGet(input, delimeter, get) {
+  function t_SplitAndGet(input, delimeter, get) {
     var parts = split(input, [delimeter]);
 
     if(get === -1) {
@@ -620,7 +620,7 @@ var textglass = (function(textglass) {
     return parts[get];
   }
 
-  function Substring(input, start, maxLength) {
+  function t_Substring(input, start, maxLength) {
     maxLength = maxLength || -1;
 
     if(start >= input.length) {
@@ -634,7 +634,7 @@ var textglass = (function(textglass) {
     return input.substring(start);
   }
 
-  function IsNumber(input) {
+  function t_IsNumber(input) {
     if(!isNaN(parseFloat(input)) && isFinite(input)) {
       return input;
     } else {
