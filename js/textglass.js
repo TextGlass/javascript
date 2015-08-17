@@ -569,7 +569,7 @@ var textglass = (function(textglass) {
       };
     } else if(transformer.type === 'SplitAndGet') {
       return function(input) {
-        return t_SplitAndGet(input, transformer.parameters.delimeter, transformer.parameters.get);
+        return t_SplitAndGet(input, transformer.parameters.delimiter, transformer.parameters.get);
       };
     } else if(transformer.type === 'Substring') {
       return function(input) {
@@ -610,8 +610,8 @@ var textglass = (function(textglass) {
     return input;
   }
 
-  function t_SplitAndGet(input, delimeter, get) {
-    var parts = split(input, [delimeter]);
+  function t_SplitAndGet(input, delimiter, get) {
+    var parts = split(input, [delimiter]);
 
     if(get === -1) {
       get = parts.length - 1;
