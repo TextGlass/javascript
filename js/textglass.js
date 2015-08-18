@@ -1,5 +1,5 @@
 var textglass = (function(textglass) {
-  textglass.version = '1.0.0';
+  textglass.version = '1.0.0 alpha';
   textglass.debugLevel = textglass.debugLevel || -1;
 
   textglass.domains = {};
