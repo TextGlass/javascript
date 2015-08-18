@@ -604,7 +604,7 @@ var textglass = (function(textglass) {
     while(pos >= 0) {
       input = input.substring(0, pos) + replaceWith + input.substring(pos + find.length);
 
-      pos = input.indexOf(find, pos + find.length);
+      pos = input.indexOf(find, pos + replaceWith.length);
     }
 
     return input;
