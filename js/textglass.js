@@ -141,7 +141,8 @@ var textglass = (function(textglass) {
     var domainName = pattern.domain;
     var domainVersion = pattern.domainVersion;
 
-    if(pattern.type !== 'pattern' || !pattern.patternSet || pattern.TextGlassSpecVersion !== 1.0) {
+    if(!pattern || pattern.type !== 'pattern' || !pattern.patternSet ||
+        pattern.TextGlassSpecVersion !== 1.0) {
       return {error: true, msg: 'Invalid pattern file'};
     }
 
@@ -255,7 +256,11 @@ var textglass = (function(textglass) {
     var attributeCount = 0;
 
     if(!attribute) {
-      attribute = {attributes: (pattern.attributes ? pattern.attributes : {})};
+      attribute = {};
+    }
+
+    if(!attribute.attributes) {
+      attribute.attributes = {};
     }
 
     if(pattern.attributes) {
