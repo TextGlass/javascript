@@ -138,7 +138,7 @@ if(testString) {
 
   var time = Date.now() - start;
 
-  textglass.debug(0, 'Test result:', result);
+  textglass.debug(0, 'Test result:', testResult);
 
   textglass.debug(0, 'Test time: ' + time + 'ms');
 }
