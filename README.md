@@ -7,6 +7,7 @@ Example
 ```html
 <script src="http://textglass.org/javascript/js/textglass.js"></script>
 <script>
+  var textglass = textglass || {};
   function load()
   {
     var browserURL = "http://textglass.org/browser/domain/patterns.json";
@@ -16,7 +17,7 @@ Example
     }
     else
     {
-      console.log('Error, couldn\'t load TextGlass Javascript client.');
+      alert('Error, couldn\'t load TextGlass Javascript client.');
     }
   }
 
@@ -24,20 +25,20 @@ Example
   {
     if(state === 'error')
     {
-      console.log(msg);
+      alert(msg);
     }
     else
     {
       var browser = textglass.domains[domain].classify(navigator.userAgent);
       if(!browser.error)
       {
-        console.log('Your browser is ' + browser.name +
+        alert('Your browser is ' + browser.name +
           (browser.mobile?' (mobile)':'') +
           ' version ' + browser.version + '.');
       }
       else
       {
-        console.log('You are using an unknown browser.');
+        alert('You are using an unknown browser.');
       }
     }
   }
