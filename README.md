@@ -5,14 +5,14 @@ Example
 -------
 
 ```html
-<script src="http://textglass.org/javascript/js/textglass.js"></script>
+<script src="http://textglass.org/trunk/javascript/js/textglass.js"></script>
 
 <script>
   var textglass = textglass || {};
 
   function load()
   {
-    var browserURL = "http://textglass.org/browser/domain/patterns.json";
+    var browserURL = "http://textglass.org/trunk/browser/domain/patterns.json";
 
     if(textglass.loaded)
     {
