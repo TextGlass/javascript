@@ -32,7 +32,15 @@ Example
     }
     else
     {
-      var browser = textglass.domains[domain].classify(navigator.userAgent);
+      try
+      {
+          var browser = textglass.domains[domain].classify(navigator.userAgent);
+      }
+      catch(e) //transformer error
+      {
+          alert(e);
+          return;
+      }
 
       if(!browser.error)
       {
