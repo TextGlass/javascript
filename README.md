@@ -36,7 +36,7 @@ Example
       {
           var browser = textglass.domains[domain].classify(navigator.userAgent);
       }
-      catch(e) //transformer error
+      catch(e) //input transformer error
       {
           alert(e);
           return;
