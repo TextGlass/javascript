@@ -36,9 +36,9 @@
   Domain:
   <select id="domainselect" onchange="loadFiles()">
     <option value=";;;;">None</option>
-    <option value="browser/domain/patterns.json;;;;browser/domain/test.json">TextGlass_browser</option>
-    <option value="os/domain/patterns.json;;;;os/domain/test.json">TextGlass_os</option>
-    <option value="device/domain/patterns.json;;device/domain/attributes.json;;device/domain/test.json">TextGlass_device</option>
+    <option value="browser/domain/patterns.json;;;;browser/domain/test.json">browser</option>
+    <option value="os/domain/patterns.json;;;;os/domain/test.json">os</option>
+    <option value="device/domain/patterns.json;;device/domain/attributes.json;;device/domain/test.json">device</option>
     <option value="reference/domains/a/patterns.json;;reference/domains/a/attributes.json;;reference/domains/a/test.json">reference_a</option>
     <option value="reference/domains/b/patterns.json;;reference/domains/b/attributes.json;;reference/domains/b/test.json">reference_b</option>
     <option value="reference/domains/c/patterns.json;;;;reference/domains/c/test.json">reference_c</option>
@@ -84,7 +84,8 @@
   <br>
   <input id="loadinput" type="button" value="Test input" onclick="testInput()"><br>
   <br>
-  <div id="inputout" class="out"></div>
+  <div id="inputout" class="out"></div><br>
+  <br>
   
   <script>
     function get(id) {
