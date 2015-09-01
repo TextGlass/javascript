@@ -46,7 +46,7 @@ Example
       {
         alert('Your browser is ' + browser.name +
           (browser.mobile?' (mobile)':'') +
-          ' version ' + browser.version + '.');
+          (browser.version? ' version ' + browser.version : '') + '.';
       }
       else
       {
