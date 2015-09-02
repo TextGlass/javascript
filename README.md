@@ -13,10 +13,12 @@ Example
   function load()
   {
     var browserURL = "http://textglass.org/trunk/browser/domain/patterns.json";
+    var osURL = "http://textglass.org/trunk/os/domain/patterns.json";
 
     if(textglass.loaded)
     {
       textglass.loadURLs(browserURL, undefined, undefined, undefined, domainReady);
+      textglass.loadURLs(osURL, undefined, undefined, undefined, domainReady);
     }
     else
     {
@@ -30,28 +32,40 @@ Example
     {
       alert(msg);
     }
-    else
+    else if(textglass.domains.browser && textglass.domains.os)
     {
       try
       {
-          var browser = textglass.domains[domain].classify(navigator.userAgent);
+          var browser = textglass.domains.browser.classify(navigator.userAgent);
+          var os = textglass.domains.os.classify(navigator.userAgent);
       }
-      catch(e) //input transformer error
+      catch(e) //fatal transformer error
       {
           alert(e);
           return;
       }
 
-      if(!browser.error)
+      var msg;
+
+      if(browser.unknown)
       {
-        alert('Your browser is ' + browser.name +
-          (browser.mobile?' (mobile)':'') +
-          (browser.version? ' version ' + browser.version : '') + '.');
+        msg = 'You are using an unknown browser.';
       }
       else
       {
-        alert('You are using an unknown browser.');
+        msg = 'Your browser is ' + browser.name + '.';
       }
+
+      if(os.unknown)
+      {
+        msg += ' You are using an unknown operating system.';
+      }
+      else
+      {
+        msg += ' Your operating system is ' + os.name + '.';
+      }
+
+      alert(msg);
     }
   }
 
