@@ -12,13 +12,13 @@ Example
 
   function load()
   {
-    var browserURL = "http://textglass.org/trunk/browser/domain/patterns.json";
     var osURL = "http://textglass.org/trunk/os/domain/patterns.json";
+    var browserURL = "http://textglass.org/trunk/browser/domain/patterns.json";
 
     if(textglass.loaded)
     {
-      textglass.loadURLs(browserURL, undefined, undefined, undefined, domainReady);
       textglass.loadURLs(osURL, undefined, undefined, undefined, domainReady);
+      textglass.loadURLs(browserURL, undefined, undefined, undefined, domainReady);
     }
     else
     {
