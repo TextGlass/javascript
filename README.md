@@ -12,8 +12,8 @@ Example
 
   function load()
   {
-    var osURL = "http://textglass.org/trunk/os/domain/patterns.json";
-    var browserURL = "http://textglass.org/trunk/browser/domain/patterns.json";
+    var osURL = 'http://textglass.org/trunk/os/domain/patterns.json';
+    var browserURL = 'http://textglass.org/trunk/browser/domain/patterns.json';
 
     if(textglass.loaded)
     {
