@@ -28,6 +28,18 @@ API
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; None
 
+`textglass.readyCallback(state, msg, domain)`
+
+&nbsp;&nbsp; **state** - state string, either 'error' or 'ready'  
+&nbsp;&nbsp; **msg** - message string  
+&nbsp;&nbsp; **domain** - domain name string
+
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
+
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
+
 `textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
 
 &nbsp;&nbsp; **pattern** - pattern object  
@@ -75,18 +87,6 @@ API
 
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Attribute map (object)
-
-`textglass.readyCallback(state, msg, domain)`
-
-&nbsp;&nbsp; **state** - state string, either 'error' or 'ready'  
-&nbsp;&nbsp; **msg** - message string  
-&nbsp;&nbsp; **domain** - domain name string
-
-&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp; Function
-
-&nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
 
 `textglass.loaded`
 
