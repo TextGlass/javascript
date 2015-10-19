@@ -17,7 +17,7 @@
  */
 
 var textglass = (function(textglass) {
-  textglass.version = '1.0.0-beta';
+  textglass.version = '1.0.0';
   textglass.debugLevel = textglass.debugLevel || -1;
 
   textglass.domains = {};
