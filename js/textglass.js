@@ -55,7 +55,7 @@ var textglass = (function(textglass) {
     loading.pattern = {};
     loading.attribute = {};
     loading.patternPatch = {};
-    loading.attributePatch= {};
+    loading.attributePatch = {};
 
     textglass.getURL(loading.pattern, loading, patternURL);
 
