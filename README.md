@@ -83,24 +83,26 @@ Example
 API
 ---
 
-#### textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)
+##### textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)
 
-**patternURL** - pattern file URL
-**attributeURL** - attribute file URL
+**patternURL** - pattern file URL  
+**attributeURL** - attribute file URL 
 **patternPatchURL** - pattern patch file URL
 **attributePatchURL** - attribute patch file URL
 **readyCallback** - see textglass.interface.readyCallback
 
-**_Description_**
+**_Description_**  
 Loads a domain from URL. readyCallback is called when ready or on error.
 
-**_Return value_**
+**_Return value_**  
 None
 
-#### textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)
+##### textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)
 
 **pattern** - pattern object
+
 **attribute** - attribute object
+
 **patternPatch** - pattern patch object
 **attributePatch** - attribute patch object
 
