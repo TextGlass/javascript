@@ -114,7 +114,7 @@ API
 &nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from Javascript JSON objects.
 
 &nbsp;&nbsp; **_Return value_**
-&nbsp;&nbsp;&nbsp;&nbsp; See textglass.interface.domain
+&nbsp;&nbsp;&nbsp;&nbsp; domain object
 
 `textglass.domains`
 
@@ -122,7 +122,18 @@ API
 &nbsp;&nbsp;&nbsp;&nbsp; Object
 
 &nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp; Mapping of domain names and callable domain objects
+&nbsp;&nbsp;&nbsp;&nbsp; Mapping of domain names and domain objects
+
+`textglass.domains.[domain]`
+
+&nbsp;&nbsp; **name** - domain name string
+&nbsp;&nbsp; **version** - domain version string
+&nbsp;&nbsp; **classify** - function, see textglass.domains.[domain].classify(input)
+&nbsp;&nbsp; **error** - boolean, set to true if textglass.loadObjects() fails
+&nbsp;&nbsp; **msg** - message string for textglass.loadObjects()
+
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Object
 
 `textglass.domains.[domain].classify(input)`
 
@@ -135,7 +146,19 @@ API
 &nbsp;&nbsp;&nbsp;&nbsp; Classifies a string against a domain.
 
 &nbsp;&nbsp; **_Return value_**
-&nbsp;&nbsp;&nbsp;&nbsp; See textglass.interface.attributeMap
+&nbsp;&nbsp;&nbsp;&nbsp; Attribute map (object)
+
+`textglass.readyCallback(state, msg, domain)`
+
+&nbsp;&nbsp; **state** - state string, either 'error' or 'ready'
+&nbsp;&nbsp; **msg** - message string
+&nbsp;&nbsp; **domain** - domain name string
+
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
+
+&nbsp;&nbsp; **_Description_**
+&nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
 
 `textglass.loaded`
 
