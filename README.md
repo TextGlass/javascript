@@ -89,7 +89,7 @@ API
 &nbsp;&nbsp; **attributeURL** - attribute file URL  
 &nbsp;&nbsp; **patternPatchURL** - pattern patch file URL  
 &nbsp;&nbsp; **attributePatchURL** - attribute patch file URL  
-&nbsp;&nbsp; **readyCallback** - see textglass.interface.readyCallback
+&nbsp;&nbsp; **readyCallback** - see textglass.readyCallback
 
 &nbsp;&nbsp; **_Type_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Function
