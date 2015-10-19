@@ -85,30 +85,28 @@ API
 
 ##### textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)
 
-**patternURL** - pattern file URL  
-**attributeURL** - attribute file URL 
-**patternPatchURL** - pattern patch file URL
-**attributePatchURL** - attribute patch file URL
-**readyCallback** - see textglass.interface.readyCallback
+&nbsp;&nbsp; **patternURL** - pattern file URL  
+&nbsp;&nbsp; **attributeURL** - attribute file URL  
+&nbsp;&nbsp; **patternPatchURL** - pattern patch file URL  
+&nbsp;&nbsp; **attributePatchURL** - attribute patch file URL  
+&nbsp;&nbsp; **readyCallback** - see textglass.interface.readyCallback
 
-**_Description_**  
-Loads a domain from URL. readyCallback is called when ready or on error.
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from URL. readyCallback is called when ready or on error.
 
-**_Return value_**  
-None
+&nbsp;&nbsp; **_Return value_**  
+&nbsp;&nbsp;&nbsp;&nbsp; None
 
 ##### textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)
 
-**pattern** - pattern object
+&nbsp;&nbsp; **pattern** - pattern object  
+&nbsp;&nbsp; **attribute** - attribute object  
+&nbsp;&nbsp; **patternPatch** - pattern patch object  
+&nbsp;&nbsp; **attributePatch** - attribute patch object
 
-**attribute** - attribute object
+&nbsp;&nbsp; **_Description_**
+&nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from Javascript JSON objects.
 
-**patternPatch** - pattern patch object
-**attributePatch** - attribute patch object
-
-**_Description_**
-Loads a domain from Javascript JSON objects.
-
-**_Return value_**
-See textglass.interface.domain
+&nbsp;&nbsp; **_Return value_**
+&nbsp;&nbsp;&nbsp;&nbsp; See textglass.interface.domain
 
