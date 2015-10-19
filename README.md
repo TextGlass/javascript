@@ -83,7 +83,7 @@ Example
 API
 ---
 
-##### textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)
+`textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)`
 
 &nbsp;&nbsp; **patternURL** - pattern file URL  
 &nbsp;&nbsp; **attributeURL** - attribute file URL  
@@ -91,22 +91,57 @@ API
 &nbsp;&nbsp; **attributePatchURL** - attribute patch file URL  
 &nbsp;&nbsp; **readyCallback** - see textglass.interface.readyCallback
 
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
+
 &nbsp;&nbsp; **_Description_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from URL. readyCallback is called when ready or on error.
 
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; None
 
-##### textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)
+`textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
 
 &nbsp;&nbsp; **pattern** - pattern object  
 &nbsp;&nbsp; **attribute** - attribute object  
 &nbsp;&nbsp; **patternPatch** - pattern patch object  
 &nbsp;&nbsp; **attributePatch** - attribute patch object
 
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
+
 &nbsp;&nbsp; **_Description_**
 &nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from Javascript JSON objects.
 
 &nbsp;&nbsp; **_Return value_**
 &nbsp;&nbsp;&nbsp;&nbsp; See textglass.interface.domain
+
+`textglass.domains`
+
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Object
+
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Mapping of domain names and callable domain objects
+
+`textglass.domains.[domain].classify(input)`
+
+&nbsp;&nbsp; **input** - string to classify against domain
+
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
+
+&nbsp;&nbsp; **_Description_**
+&nbsp;&nbsp;&nbsp;&nbsp; Classifies a string against a domain.
+
+&nbsp;&nbsp; **_Return value_**
+&nbsp;&nbsp;&nbsp;&nbsp; See textglass.interface.attributeMap
+
+`textglass.loaded`
+
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Boolean
+
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; True when textglass has been loaded.
 
