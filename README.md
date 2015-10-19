@@ -1,6 +1,13 @@
 TextGlass Javascript Client
 ===========================
 
+Download
+--------
+
+Trunk: http://textglass.org/trunk/javascript/js/textglass.js
+
+1.0.0: ...
+
 Example
 -------
 
@@ -72,3 +79,34 @@ Example
   load();
 </script>
 ```
+
+API
+---
+
+#### textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)
+
+**patternURL** - pattern file URL
+**attributeURL** - attribute file URL
+**patternPatchURL** - pattern patch file URL
+**attributePatchURL** - attribute patch file URL
+**readyCallback** - see textglass.interface.readyCallback
+
+**_Description_**
+Loads a domain from URL. readyCallback is called when ready or on error.
+
+**_Return value_**
+None
+
+#### textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)
+
+**pattern** - pattern object
+**attribute** - attribute object
+**patternPatch** - pattern patch object
+**attributePatch** - attribute patch object
+
+**_Description_**
+Loads a domain from Javascript JSON objects.
+
+**_Return value_**
+See textglass.interface.domain
+
