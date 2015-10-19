@@ -33,23 +33,26 @@ var textglass = (function(textglass) {
     }
   };
 
-  textglass.loadURLs = function(patternURL, attributeURL, patternPatchURL, attributePatchURL, callback) {
+  textglass.domainReady = function(state, msg, domain) {
+  };
+
+  textglass.loadURLs = function(patternURL, attributeURL, patternPatchURL, attributePatchURL, domainReady) {
     textglass.debug(1, 'patternURL:', patternURL);
     textglass.debug(1, 'attributeURL:', attributeURL);
     textglass.debug(1, 'patternPatchURL:', patternPatchURL);
     textglass.debug(1, 'attributePatchURL:', attributePatchURL);
 
-    callback = callback || function() {};
+    domainReady = domainReady || textglass.domainReady;
 
     if(!patternURL) {
-      callback('error', 'no pattern file');
+      domainReady('error', 'no pattern file');
       return;
     }
 
     var loading = {};
 
     loading.status = 1;
-    loading.callback = callback;
+    loading.callback = domainReady;
     loading.start = Date.now();
 
     loading.pattern = {};
@@ -194,8 +197,6 @@ var textglass = (function(textglass) {
       return {error: true, msg: 'Domain already loaded', domain: domainName};
     }
 
-    var domain = {};
-
     if(!pattern.inputParser) {
       pattern.inputParser = {};
     }
@@ -326,6 +327,8 @@ var textglass = (function(textglass) {
       }
     }
 
+    var domain = {};
+
     domain.name = domainName;
     domain.version = domainVersion;
     domain.pattern = pattern;
@@ -334,18 +337,17 @@ var textglass = (function(textglass) {
       return textglass.classify(domain, input);
     };
 
-    textglass.domains[domainName] = domain;
-
     var end = Date.now() - start;
 
-    return {
-      msg: 'Loaded ' + domainName + ', version: ' + domainVersion +
+    domain.msg = 'Loaded ' + domainName + ', version: ' + domainVersion +
           ', patterns: ' + domain.pattern.patternSet.patterns.length +
           ', attributes: ' + attributeCount + ', time: ' + end + 'ms' +
-          (pattern._diff ? ' (' + pattern._diff + 'ms)' : ''),
-      domain: domainName,
-      domainVersion: domainVersion
-    };
+          (pattern._diff ? ' (' + pattern._diff + 'ms)' : '');
+
+    textglass.domains[domainName] = domain;
+
+
+    return domain;
   };
 
   textglass.classify = function(domain, input) {

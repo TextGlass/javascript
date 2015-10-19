@@ -152,7 +152,7 @@ if(testString) {
 
   var start = Date.now();
 
-  var testResult = textglass.domains[result.domain].classify(testString);
+  var testResult = textglass.domains[result.name].classify(testString);
 
   var time = Date.now() - start;
 
