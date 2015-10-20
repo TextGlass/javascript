@@ -1,13 +1,6 @@
 TextGlass Javascript Client
 ===========================
 
-Download
---------
-
-Trunk: http://textglass.org/trunk/javascript/js/textglass.js
-
-1.0.0: ...
-
 API
 ---
 
