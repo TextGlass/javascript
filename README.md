@@ -11,7 +11,7 @@ Trunk: http://textglass.org/trunk/javascript/js/textglass.js
 API
 ---
 
-`textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)`
+* `textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)`
 
 &nbsp;&nbsp; **patternURL** - pattern file URL  
 &nbsp;&nbsp; **attributeURL** - attribute file URL  
@@ -28,7 +28,7 @@ API
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; None
 
-`textglass.readyCallback(state, msg, domain)`
+* `textglass.readyCallback(state, msg, domain)`
 
 &nbsp;&nbsp; **state** - state string, either 'error' or 'ready'  
 &nbsp;&nbsp; **msg** - message string  
