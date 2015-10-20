@@ -11,90 +11,82 @@ Trunk: http://textglass.org/trunk/javascript/js/textglass.js
 API
 ---
 
-* `textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)`
+• `textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)`
 
-&nbsp;&nbsp;&nbsp;&nbsp; **patternURL** - pattern file URL  
-&nbsp;&nbsp;&nbsp;&nbsp; **attributeURL** - attribute file URL  
-&nbsp;&nbsp;&nbsp;&nbsp; **patternPatchURL** - pattern patch file URL  
-&nbsp;&nbsp;&nbsp;&nbsp; **attributePatchURL** - attribute patch file URL  
-&nbsp;&nbsp;&nbsp;&nbsp; **readyCallback** - see textglass.readyCallback
+&nbsp;&nbsp; **patternURL** - pattern file URL  
+&nbsp;&nbsp; **attributeURL** - attribute file URL  
+&nbsp;&nbsp; **patternPatchURL** - pattern patch file URL  
+&nbsp;&nbsp; **attributePatchURL** - attribute patch file URL  
+&nbsp;&nbsp; **readyCallback** - see textglass.readyCallback
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Function
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from URL. readyCallback is called when ready or on error.
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from URL. readyCallback is called when ready or on error.
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Return value_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; None
+&nbsp;&nbsp; **_Return value_**  
+&nbsp;&nbsp;&nbsp;&nbsp; None
 
-* `textglass.readyCallback(state, msg, domain)`
+• `textglass.readyCallback(state, msg, domain)`
 
-&nbsp;&nbsp;&nbsp;&nbsp; **state** - state string, either 'error' or 'ready'  
-&nbsp;&nbsp;&nbsp;&nbsp; **msg** - message string  
-&nbsp;&nbsp;&nbsp;&nbsp; **domain** - domain name string
+&nbsp;&nbsp; **state** - state string, either 'error' or 'ready'  
+&nbsp;&nbsp; **msg** - message string  
+&nbsp;&nbsp; **domain** - domain name string
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Function
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
 
-* `textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
+• `textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
 
-&nbsp;&nbsp;&nbsp;&nbsp; **pattern** - pattern object  
-&nbsp;&nbsp;&nbsp;&nbsp; **attribute** - attribute object  
-&nbsp;&nbsp;&nbsp;&nbsp; **patternPatch** - pattern patch object  
-&nbsp;&nbsp;&nbsp;&nbsp; **attributePatch** - attribute patch object
+&nbsp;&nbsp; **pattern** - pattern object  
+&nbsp;&nbsp; **attribute** - attribute object  
+&nbsp;&nbsp; **patternPatch** - pattern patch object  
+&nbsp;&nbsp; **attributePatch** - attribute patch object
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Function
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from Javascript JSON objects.
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Loads a domain from Javascript JSON objects.
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Return value_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; domain object
+&nbsp;&nbsp; **_Return value_**  
+&nbsp;&nbsp;&nbsp;&nbsp; domain object
 
-* `textglass.domains`
+• `textglass.domains.[domain]`
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Object
+&nbsp;&nbsp; **name** - domain name string  
+&nbsp;&nbsp; **version** - domain version string  
+&nbsp;&nbsp; **classify** - function, see textglass.domains.[domain].classify(input)  
+&nbsp;&nbsp; **error** - boolean, set to true if textglass.loadObjects() fails  
+&nbsp;&nbsp; **msg** - message string for textglass.loadObjects()
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mapping of domain names and domain objects
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Object
 
-* `textglass.domains.[domain]`
+• `textglass.domains.[domain].classify(input)`
 
-&nbsp;&nbsp;&nbsp;&nbsp; **name** - domain name string  
-&nbsp;&nbsp;&nbsp;&nbsp; **version** - domain version string  
-&nbsp;&nbsp;&nbsp;&nbsp; **classify** - function, see textglass.domains.[domain].classify(input)  
-&nbsp;&nbsp;&nbsp;&nbsp; **error** - boolean, set to true if textglass.loadObjects() fails  
-&nbsp;&nbsp;&nbsp;&nbsp; **msg** - message string for textglass.loadObjects()
+&nbsp;&nbsp; **input** - string to classify against domain
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Object
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Function
 
-* `textglass.domains.[domain].classify(input)`
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Classifies a string against a domain.
 
-&nbsp;&nbsp;&nbsp;&nbsp; **input** - string to classify against domain
+&nbsp;&nbsp; **_Return value_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Attribute map (object)
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Function
+• `textglass.loaded`
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Classifies a string against a domain.
+&nbsp;&nbsp; **_Type_**  
+&nbsp;&nbsp;&nbsp;&nbsp; Boolean
 
-&nbsp;&nbsp;&nbsp;&nbsp; **_Return value_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Attribute map (object)
-
-* `textglass.loaded`
-
-&nbsp;&nbsp;&nbsp;&nbsp; **_Type_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Boolean
-
-&nbsp;&nbsp;&nbsp;&nbsp; **_Description_**  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; True when textglass has been loaded.
+&nbsp;&nbsp; **_Description_**  
+&nbsp;&nbsp;&nbsp;&nbsp; True when textglass has been loaded.
 
 Example
 -------
