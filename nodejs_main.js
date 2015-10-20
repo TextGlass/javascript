@@ -18,8 +18,6 @@
 
 var textglass = require('./js/textglass');
 var textglasstest = require('./js/textglasstest');
-//var textglass = require('./jsmin/textglass.min');
-//var textglasstest = require('./jsmin/textglasstest.min');
 
 textglass.debugLevel = 1;
 
