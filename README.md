@@ -40,7 +40,7 @@ API
 &nbsp;&nbsp; **_Description_**  
 &nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
 
-`textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
+• `textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
 
 &nbsp;&nbsp; **pattern** - pattern object  
 &nbsp;&nbsp; **attribute** - attribute object  
@@ -56,7 +56,7 @@ API
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; domain object
 
-`textglass.domains`
+• `textglass.domains`
 
 &nbsp;&nbsp; **_Type_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Object
@@ -64,7 +64,7 @@ API
 &nbsp;&nbsp; **_Description_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Mapping of domain names and domain objects
 
-`textglass.domains.[domain]`
+• `textglass.domains.[domain]`
 
 &nbsp;&nbsp; **name** - domain name string  
 &nbsp;&nbsp; **version** - domain version string  
@@ -75,7 +75,7 @@ API
 &nbsp;&nbsp; **_Type_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Object
 
-`textglass.domains.[domain].classify(input)`
+• `textglass.domains.[domain].classify(input)`
 
 &nbsp;&nbsp; **input** - string to classify against domain
 
@@ -88,7 +88,7 @@ API
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Attribute map (object)
 
-`textglass.loaded`
+• `textglass.loaded`
 
 &nbsp;&nbsp; **_Type_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Boolean
