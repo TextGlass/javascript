@@ -4,6 +4,7 @@ TextGlass Javascript Client
 API
 ---
 
+
 • `textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)`
 
 &nbsp;&nbsp; **patternURL** - pattern file URL  
@@ -21,6 +22,8 @@ API
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; None
 
+
+
 • `textglass.readyCallback(state, msg, domain)`
 
 &nbsp;&nbsp; **state** - state string, either 'error' or 'ready'  
@@ -32,6 +35,8 @@ API
 
 &nbsp;&nbsp; **_Description_**  
 &nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
+
+
 
 • `textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
 
@@ -49,6 +54,8 @@ API
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; domain object
 
+
+
 • `textglass.domains.[domain]`
 
 &nbsp;&nbsp; **name** - domain name string  
@@ -59,6 +66,8 @@ API
 
 &nbsp;&nbsp; **_Type_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Object
+
+
 
 • `textglass.domains.[domain].classify(input)`
 
@@ -73,6 +82,8 @@ API
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Attribute map (object)
 
+
+
 • `textglass.loaded`
 
 &nbsp;&nbsp; **_Type_**  
@@ -85,15 +96,15 @@ Example
 -------
 
 ```html
-<script src="http://textglass.org/trunk/javascript/js/textglass.js"></script>
+<script src="http://textglass.org/releases/javascript/latest/textglass.min.js"></script>
 
 <script>
   var textglass = textglass || {};
 
   function load()
   {
-    var osURL = 'http://textglass.org/trunk/os/domain/patterns.json';
-    var browserURL = 'http://textglass.org/trunk/browser/domain/patterns.json';
+    var osURL = 'http://textglass.org/releases/os/latest/patterns.min.json';
+    var browserURL = 'http://textglass.org/releases/browser/latest/patterns.min.json';
 
     if(textglass.loaded)
     {
