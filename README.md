@@ -1,10 +1,10 @@
 TextGlass Javascript Client
 ===========================
 
+
 API
 ---
-
-
+  
 • `textglass.loadURLs(patternURL, attributeURL, patternPatchURL, attributePatchURL, readyCallback)`
 
 &nbsp;&nbsp; **patternURL** - pattern file URL  
@@ -21,9 +21,8 @@ API
 
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; None
-
-
-
+  
+  
 • `textglass.readyCallback(state, msg, domain)`
 
 &nbsp;&nbsp; **state** - state string, either 'error' or 'ready'  
@@ -35,9 +34,8 @@ API
 
 &nbsp;&nbsp; **_Description_**  
 &nbsp;&nbsp;&nbsp;&nbsp; This is the callback for textglass.loadURLs().
-
-
-
+  
+  
 • `textglass.loadObjects(pattern, attribute, patternPatch, attributePatch)`
 
 &nbsp;&nbsp; **pattern** - pattern object  
@@ -53,9 +51,8 @@ API
 
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; domain object
-
-
-
+  
+  
 • `textglass.domains.[domain]`
 
 &nbsp;&nbsp; **name** - domain name string  
@@ -66,9 +63,8 @@ API
 
 &nbsp;&nbsp; **_Type_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Object
-
-
-
+  
+  
 • `textglass.domains.[domain].classify(input)`
 
 &nbsp;&nbsp; **input** - string to classify against domain
@@ -81,9 +77,8 @@ API
 
 &nbsp;&nbsp; **_Return value_**  
 &nbsp;&nbsp;&nbsp;&nbsp; Attribute map (object)
-
-
-
+  
+  
 • `textglass.loaded`
 
 &nbsp;&nbsp; **_Type_**  
@@ -91,6 +86,8 @@ API
 
 &nbsp;&nbsp; **_Description_**  
 &nbsp;&nbsp;&nbsp;&nbsp; True when textglass has been loaded.
+  
+  
 
 Example
 -------
