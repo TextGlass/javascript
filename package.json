@@ -1,11 +1,11 @@
 {
   "name": "textglass",
-  "version": "1.0.0",
+  "version": "1.0.0-1",
   "description": "TextGlass Javascript Client",
   "main": "js/textglass.js",
-  "scripts": {
-    "test": "js/textglasstest.js"
-  },
+  "files": [
+    "js/textglasstest.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TextGlass/javascript.git"
