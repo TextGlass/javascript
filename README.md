@@ -2,6 +2,18 @@ TextGlass Javascript Client
 ===========================
 
 
+Releases
+--------
+
+http://textglass.org/releases/javascript/
+
+
+Example
+-------
+
+http://textglass.org/trunk/javascript/
+
+
 API
 ---
   
@@ -89,8 +101,8 @@ API
   
   
 
-Example
--------
+Example Code
+------------
 
 ```html
 <script src="http://textglass.org/releases/javascript/latest/textglass.min.js"></script>
